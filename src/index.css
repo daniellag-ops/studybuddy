@@ -95,6 +95,76 @@ body {
   }
 }
 
+/* Navbar */
+.nav-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 56px;
+  box-sizing: border-box;
+}
+
+.nav-logo {
+  font-size: 22px;
+  font-weight: 800;
+  color: #228b78;
+  white-space: nowrap;
+}
+
+.nav-links {
+  display: flex;
+  gap: 8px;
+}
+
+.nav-link {
+  padding: 8px 16px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s;
+  color: #5a8a78;
+  white-space: nowrap;
+}
+
+.nav-link.active {
+  background: linear-gradient(135deg, #228b78, #2ba08a);
+  color: white;
+}
+
+@media (max-width: 768px) {
+  .nav-inner {
+    padding: 0 8px;
+    flex-direction: column;
+    height: auto;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    gap: 6px;
+  }
+
+  .nav-logo {
+    font-size: 1.1rem;
+  }
+
+  .nav-links {
+    display: flex;
+    width: 100%;
+    justify-content: space-around;
+    gap: 0;
+  }
+
+  .nav-link {
+    padding: 6px 8px;
+    font-size: 0.75rem;
+    border-radius: 10px;
+    flex: 1;
+    text-align: center;
+  }
+}
+
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: #eef6f3; }
 ::-webkit-scrollbar-thumb { background: rgba(34, 139, 120, 0.3); border-radius: 3px; }
