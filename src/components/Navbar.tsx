@@ -1,43 +1,39 @@
 import { NavLink } from 'react-router-dom'
 
-const links = [
-  { to: '/', label: 'ראשי' },
-  { to: '/tasks', label: 'משימות' },
-  { to: '/schedule', label: 'לו״ז' },
-  { to: '/tips', label: 'טיפים' },
+const TABS = [
+  { to: '/', label: 'ראשי', icon: '🏠' },
+  { to: '/tasks', label: 'משימות', icon: '✅' },
+  { to: '/schedule', label: 'לו״ז', icon: '📅' },
+  { to: '/tips', label: 'טיפים', icon: '💡' },
 ]
 
-export default function Navbar() {
+interface Props {
+  chatOpen: boolean
+  onChatToggle: () => void
+}
+
+export default function BottomNav({ chatOpen, onChatToggle }: Props) {
   return (
-    <nav
-      style={{
-        position: 'sticky',
-        top: 0,
-        width: '100%',
-        zIndex: 50,
-        background: 'rgba(238,246,243,0.9)',
-        backdropFilter: 'blur(12px)',
-        borderBottom: '1px solid rgba(34,139,120,0.12)',
-        boxSizing: 'border-box',
-      }}
-    >
-      <div className="nav-inner">
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-          <span className="nav-logo">StudyBuddy</span>
-          <span>🌿</span>
-        </div>
-        <div className="nav-links">
-          {links.map(({ to, label }) => (
-            <NavLink
-              key={to}
-              to={to}
-              end={to === '/'}
-              className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}
-            >
-              {label}
-            </NavLink>
-          ))}
-        </div>
+    <nav className="bottom-nav">
+      <div className="bottom-nav-inner">
+        {TABS.map(({ to, label, icon }) => (
+          <NavLink
+            key={to}
+            to={to}
+            end={to === '/'}
+            className={({ isActive }) => `tab-btn${isActive ? ' active' : ''}`}
+          >
+            <div className="tab-icon">{icon}</div>
+            <span className="tab-label">{label}</span>
+          </NavLink>
+        ))}
+        <button
+          className={`tab-btn${chatOpen ? ' active' : ''}`}
+          onClick={onChatToggle}
+        >
+          <div className="tab-icon">💬</div>
+          <span className="tab-label">צ׳אט</span>
+        </button>
       </div>
     </nav>
   )

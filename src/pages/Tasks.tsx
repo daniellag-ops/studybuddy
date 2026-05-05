@@ -20,9 +20,20 @@ const card: React.CSSProperties = {
   width: '100%',
   boxSizing: 'border-box',
   background: 'white',
-  borderRadius: '18px',
-  border: '1px solid rgba(34,139,120,0.08)',
-  boxShadow: '0 2px 12px rgba(34,139,120,0.08)',
+  borderRadius: '24px',
+  border: '1px solid rgba(91,155,213,0.12)',
+  boxShadow: '0 4px 18px rgba(91,155,213,0.1)',
+}
+
+const inputStyle: React.CSSProperties = {
+  padding: '10px 16px',
+  borderRadius: '14px',
+  fontSize: '14px',
+  outline: 'none',
+  border: '1.5px solid rgba(91,155,213,0.25)',
+  background: '#f0f6fd',
+  color: '#2a3a4a',
+  boxSizing: 'border-box',
 }
 
 export default function Tasks() {
@@ -73,8 +84,8 @@ export default function Tasks() {
       className="fade-in"
       style={{ maxWidth: '1200px', margin: '0 auto', padding: '24px', width: '100%', boxSizing: 'border-box' }}
     >
-      <h1 style={{ fontSize: '28px', fontWeight: 800, color: '#2a3b33', marginBottom: '24px' }}>
-        📝 משימות
+      <h1 style={{ fontSize: '28px', fontWeight: 800, color: '#2a3a4a', marginBottom: '24px' }}>
+        ✅ משימות
       </h1>
 
       {/* Add form */}
@@ -86,33 +97,16 @@ export default function Tasks() {
             onChange={e => setText(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && addTask()}
             placeholder="הוסיפו משימה חדשה..."
-            style={{
-              flex: '1 1 200px',
-              minWidth: 0,
-              padding: '10px 16px',
-              borderRadius: '12px',
-              fontSize: '14px',
-              outline: 'none',
-              border: '1.5px solid rgba(34,139,120,0.2)',
-              background: '#f8fdfc',
-              color: '#2a3b33',
-              boxSizing: 'border-box',
-            }}
+            style={{ ...inputStyle, flex: '1 1 200px', minWidth: 0 }}
           />
           <select
             value={priority}
             onChange={e => setPriority(e.target.value as Priority)}
             style={{
-              padding: '10px 16px',
-              borderRadius: '12px',
-              fontSize: '14px',
+              ...inputStyle,
               fontWeight: 600,
-              outline: 'none',
               cursor: 'pointer',
-              border: '1.5px solid rgba(34,139,120,0.2)',
-              background: '#f8fdfc',
               color: PRIORITY_COLORS[priority],
-              boxSizing: 'border-box',
             }}
           >
             <option value="דחוף">דחוף</option>
@@ -123,49 +117,30 @@ export default function Tasks() {
             type="date"
             value={dueDate}
             onChange={e => setDueDate(e.target.value)}
-            style={{
-              padding: '10px 12px',
-              borderRadius: '12px',
-              fontSize: '14px',
-              outline: 'none',
-              border: '1.5px solid rgba(34,139,120,0.2)',
-              background: '#f8fdfc',
-              color: dueDate ? '#2a3b33' : '#5a8a78',
-              boxSizing: 'border-box',
-              cursor: 'pointer',
-            }}
+            style={{ ...inputStyle, cursor: 'pointer', color: dueDate ? '#2a3a4a' : '#6a8fa8' }}
           />
           {dueDate && (
             <input
               type="time"
               value={dueTime}
               onChange={e => setDueTime(e.target.value)}
-              style={{
-                padding: '10px 12px',
-                borderRadius: '12px',
-                fontSize: '14px',
-                outline: 'none',
-                border: '1.5px solid rgba(34,139,120,0.2)',
-                background: '#f8fdfc',
-                color: '#2a3b33',
-                boxSizing: 'border-box',
-                cursor: 'pointer',
-              }}
+              style={{ ...inputStyle, cursor: 'pointer' }}
             />
           )}
           <button
             onClick={addTask}
             style={{
               padding: '10px 20px',
-              borderRadius: '12px',
+              borderRadius: '14px',
               fontSize: '14px',
               fontWeight: 700,
               color: 'white',
               border: 'none',
               cursor: 'pointer',
-              background: 'linear-gradient(135deg, #228b78, #2ba08a)',
+              background: 'linear-gradient(135deg, #5b9bd5, #4a8ac7)',
               whiteSpace: 'nowrap',
               boxSizing: 'border-box',
+              boxShadow: '0 4px 12px rgba(91,155,213,0.3)',
             }}
           >
             + הוסף
@@ -181,14 +156,15 @@ export default function Tasks() {
             onClick={() => setFilter(f)}
             style={{
               padding: '6px 16px',
-              borderRadius: '12px',
+              borderRadius: '14px',
               fontSize: '14px',
               fontWeight: 600,
               cursor: 'pointer',
               transition: 'all 0.2s',
-              background: filter === f ? 'linear-gradient(135deg, #228b78, #2ba08a)' : 'rgba(34,139,120,0.06)',
-              color: filter === f ? 'white' : '#5a8a78',
-              border: filter === f ? 'none' : '1px solid rgba(34,139,120,0.15)',
+              background: filter === f ? 'linear-gradient(135deg, #5b9bd5, #4a8ac7)' : 'rgba(91,155,213,0.08)',
+              color: filter === f ? 'white' : '#5b9bd5',
+              border: filter === f ? 'none' : '1px solid rgba(91,155,213,0.2)',
+              boxShadow: filter === f ? '0 4px 12px rgba(91,155,213,0.25)' : 'none',
               boxSizing: 'border-box',
             }}
           >
@@ -200,7 +176,7 @@ export default function Tasks() {
       {/* Task list */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
         {filtered.length === 0 && (
-          <div style={{ ...card, padding: '32px', textAlign: 'center', color: '#5a8a78', fontSize: '14px' }}>
+          <div style={{ ...card, padding: '32px', textAlign: 'center', color: '#6a8fa8', fontSize: '14px' }}>
             אין משימות להצגה
           </div>
         )}
@@ -215,20 +191,20 @@ export default function Tasks() {
               gap: '12px',
               borderRight: `4px solid ${PRIORITY_COLORS[task.priority]}`,
               opacity: task.done ? 0.65 : 1,
-              boxShadow: '0 1px 6px rgba(34,139,120,0.06)',
+              boxShadow: '0 2px 10px rgba(91,155,213,0.08)',
             }}
           >
             <input
               type="checkbox"
               checked={task.done}
               onChange={() => toggleTask(task.id)}
-              style={{ width: '16px', height: '16px', cursor: 'pointer', accentColor: '#228b78', flexShrink: 0 }}
+              style={{ width: '16px', height: '16px', cursor: 'pointer', accentColor: '#5b9bd5', flexShrink: 0 }}
             />
             <span
               style={{
                 flex: 1,
                 fontSize: '14px',
-                color: '#2a3b33',
+                color: '#2a3a4a',
                 textDecoration: task.done ? 'line-through' : 'none',
                 minWidth: 0,
               }}
@@ -236,7 +212,7 @@ export default function Tasks() {
               {task.text}
             </span>
             {task.dueDate && (
-              <span style={{ fontSize: '12px', color: '#5a8a78', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '3px' }}>
+              <span style={{ fontSize: '12px', color: '#6a8fa8', flexShrink: 0 }}>
                 📅 {task.dueDate} {task.dueTime}
               </span>
             )}
@@ -257,7 +233,7 @@ export default function Tasks() {
               onClick={() => deleteTask(task.id)}
               style={{
                 padding: '4px 8px',
-                borderRadius: '8px',
+                borderRadius: '10px',
                 fontSize: '13px',
                 cursor: 'pointer',
                 border: 'none',

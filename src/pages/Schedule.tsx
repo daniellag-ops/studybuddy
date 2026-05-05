@@ -8,13 +8,13 @@ const PRIORITY_COLORS: Record<Priority, string> = {
   'רגיל': '#3aaa6d',
 }
 
-const DAY_NAMES = ['ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי', 'שבת']
+const DAY_NAMES = ['יום ראשון', 'יום שני', 'יום שלישי', 'יום רביעי', 'יום חמישי', 'יום שישי', 'שבת']
 const HOURS = Array.from({ length: 15 }, (_, i) => `${String(i + 7).padStart(2, '0')}:00`)
 
 const CATEGORIES = [
   { label: 'לימודים', emoji: '📖', color: '#3581b8' },
   { label: 'חברים', emoji: '👫', color: '#c44daa' },
-  { label: 'תחביב', emoji: '🎨', color: '#228b78' },
+  { label: 'תחביב', emoji: '🎨', color: '#5b9bd5' },
   { label: 'מנוחה', emoji: '😴', color: '#d4960a' },
   { label: 'ספורט', emoji: '⚽', color: '#3aaa6d' },
 ]
@@ -96,10 +96,12 @@ export default function Schedule() {
     }))
   }
 
+  const borderColor = 'rgba(197,217,237,0.8)'
+
   return (
     <div className="fade-in" style={{ maxWidth: '1200px', margin: '0 auto', padding: '24px', width: '100%', boxSizing: 'border-box' }}>
       <div className="flex items-center justify-between mb-4">
-        <h1 className="text-3xl font-bold" style={{ color: '#2a3b33' }}>
+        <h1 className="text-3xl font-bold" style={{ color: '#2a3a4a' }}>
           📅 לוח שבועי
         </h1>
         <div className="flex items-center gap-2">
@@ -107,23 +109,34 @@ export default function Schedule() {
             onClick={() => setWeekOffset(0)}
             className="px-3 py-1.5 rounded-xl text-sm font-semibold transition-all"
             style={{
-              background: weekOffset === 0 ? 'linear-gradient(135deg, #228b78, #2ba08a)' : 'rgba(34,139,120,0.08)',
-              color: weekOffset === 0 ? 'white' : '#5a8a78',
+              background: weekOffset === 0 ? 'linear-gradient(135deg, #5b9bd5, #4a8ac7)' : 'rgba(91,155,213,0.1)',
+              color: weekOffset === 0 ? 'white' : '#5b9bd5',
+              border: 'none',
+              cursor: 'pointer',
+              boxShadow: weekOffset === 0 ? '0 4px 12px rgba(91,155,213,0.3)' : 'none',
             }}
           >
             היום
           </button>
           <button
             onClick={() => setWeekOffset(w => w - 1)}
-            className="w-8 h-8 rounded-xl flex items-center justify-center font-bold transition-all hover:opacity-80"
-            style={{ background: 'rgba(34,139,120,0.08)', color: '#228b78' }}
+            style={{
+              width: '32px', height: '32px', borderRadius: '12px',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontWeight: 700, background: 'rgba(91,155,213,0.1)',
+              color: '#5b9bd5', border: 'none', cursor: 'pointer', fontSize: '18px',
+            }}
           >
             ›
           </button>
           <button
             onClick={() => setWeekOffset(w => w + 1)}
-            className="w-8 h-8 rounded-xl flex items-center justify-center font-bold transition-all hover:opacity-80"
-            style={{ background: 'rgba(34,139,120,0.08)', color: '#228b78' }}
+            style={{
+              width: '32px', height: '32px', borderRadius: '12px',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontWeight: 700, background: 'rgba(91,155,213,0.1)',
+              color: '#5b9bd5', border: 'none', cursor: 'pointer', fontSize: '18px',
+            }}
           >
             ‹
           </button>
@@ -132,32 +145,47 @@ export default function Schedule() {
 
       {/* Grid */}
       <div
-        className="bg-white rounded-[18px] overflow-auto"
         style={{
-          border: '1px solid rgba(34,139,120,0.08)',
-          boxShadow: '0 2px 12px rgba(34,139,120,0.08)',
+          background: 'white',
+          borderRadius: '24px',
+          overflow: 'auto',
+          border: '1.5px solid rgba(197,217,237,0.9)',
+          boxShadow: '0 4px 20px rgba(91,155,213,0.1)',
         }}
       >
         <div
           className="grid w-full"
-          style={{ gridTemplateColumns: '70px repeat(7, minmax(0, 1fr))', minWidth: '700px' }}
+          style={{ gridTemplateColumns: '64px repeat(7, minmax(0, 1fr))', minWidth: '700px' }}
         >
           {/* Header row */}
-          <div className="border-b border-r" style={{ borderColor: 'rgba(34,139,120,0.1)' }} />
+          <div style={{ borderBottom: `1px solid ${borderColor}`, borderInlineEnd: `1px solid ${borderColor}` }} />
           {weekDates.map((date, i) => (
             <div
               key={i}
-              className="border-b border-r p-2 text-center"
-              style={{ borderColor: 'rgba(34,139,120,0.1)' }}
+              style={{
+                borderBottom: `1px solid ${borderColor}`,
+                borderInlineEnd: `1px solid ${borderColor}`,
+                padding: '8px 4px',
+                textAlign: 'center',
+              }}
             >
-              <div className="text-xs font-semibold" style={{ color: '#5a8a78' }}>
+              <div style={{ fontSize: '11px', fontWeight: 600, color: '#6a8fa8' }}>
                 {DAY_NAMES[i]}
               </div>
               <div
-                className="text-sm font-bold mx-auto w-7 h-7 flex items-center justify-center rounded-full mt-0.5"
                 style={{
-                  background: isToday(date) ? 'linear-gradient(135deg, #228b78, #2ba08a)' : 'transparent',
-                  color: isToday(date) ? 'white' : '#2a3b33',
+                  fontSize: '14px',
+                  fontWeight: 700,
+                  width: '28px',
+                  height: '28px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderRadius: '50%',
+                  margin: '2px auto 0',
+                  background: isToday(date) ? 'linear-gradient(135deg, #5b9bd5, #4a8ac7)' : 'transparent',
+                  color: isToday(date) ? 'white' : '#2a3a4a',
+                  boxShadow: isToday(date) ? '0 3px 10px rgba(91,155,213,0.4)' : 'none',
                 }}
               >
                 {date.getDate()}
@@ -169,12 +197,19 @@ export default function Schedule() {
           {HOURS.map(hour => (
             <React.Fragment key={hour}>
               <div
-                className="border-b border-r px-2 py-2 text-xs font-semibold"
                 style={{
-                  borderColor: 'rgba(34,139,120,0.1)',
-                  color: '#5a8a78',
+                  borderBottom: `1px solid ${borderColor}`,
+                  borderInlineEnd: `1px solid ${borderColor}`,
+                  padding: '4px 6px',
+                  fontSize: '11px',
+                  fontWeight: 600,
+                  color: '#6a8fa8',
                   minHeight: '56px',
                   textAlign: 'center',
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                  justifyContent: 'center',
+                  paddingTop: '6px',
                 }}
               >
                 {hour}
@@ -185,9 +220,10 @@ export default function Schedule() {
                 return (
                   <div
                     key={dayIdx}
-                    className="border-b border-r schedule-cell cursor-pointer"
+                    className="schedule-cell cursor-pointer"
                     style={{
-                      borderColor: 'rgba(34,139,120,0.1)',
+                      borderBottom: `1px solid ${borderColor}`,
+                      borderInlineEnd: `1px solid ${borderColor}`,
                       minHeight: '56px',
                       padding: '3px',
                     }}
@@ -200,7 +236,7 @@ export default function Schedule() {
                         style={{
                           background: `${ev.categoryColor}18`,
                           borderRight: `3px solid ${ev.categoryColor}`,
-                          color: '#2a3b33',
+                          color: '#2a3a4a',
                         }}
                         onClick={e => e.stopPropagation()}
                       >
@@ -212,7 +248,7 @@ export default function Schedule() {
                             deleteEvent(dayIdx, ev.uid)
                           }}
                           className="text-xs opacity-50 hover:opacity-100 ml-auto"
-                          style={{ color: '#e05555' }}
+                          style={{ color: '#e05555', background: 'none', border: 'none', cursor: 'pointer' }}
                         >
                           ✕
                         </button>
@@ -223,9 +259,9 @@ export default function Schedule() {
                         key={task.id}
                         className="rounded-lg px-1.5 py-0.5 mb-0.5 flex items-center gap-1 text-xs"
                         style={{
-                          background: 'rgba(34,139,120,0.06)',
+                          background: 'rgba(91,155,213,0.08)',
                           borderRight: `3px solid ${PRIORITY_COLORS[task.priority]}`,
-                          color: '#2a3b33',
+                          color: '#2a3a4a',
                           opacity: task.done ? 0.5 : 1,
                           cursor: 'pointer',
                           textDecoration: task.done ? 'line-through' : 'none',
@@ -258,7 +294,7 @@ export default function Schedule() {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            background: 'rgba(42,59,51,0.35)',
+            background: 'rgba(42,58,74,0.4)',
             backdropFilter: 'blur(4px)',
           }}
         >
@@ -266,18 +302,18 @@ export default function Schedule() {
             onClick={e => e.stopPropagation()}
             style={{
               background: 'white',
-              borderRadius: '20px',
+              borderRadius: '24px',
               padding: '28px',
               maxWidth: '420px',
               width: '90%',
               boxSizing: 'border-box',
-              boxShadow: '0 20px 60px rgba(0,0,0,0.15)',
+              boxShadow: '0 20px 60px rgba(91,155,213,0.25)',
             }}
           >
-            <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#2a3b33', marginBottom: '4px' }}>
+            <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#2a3a4a', marginBottom: '4px' }}>
               הוספת אירוע
             </h3>
-            <p style={{ fontSize: '13px', color: '#5a8a78', marginBottom: '20px' }}>
+            <p style={{ fontSize: '13px', color: '#6a8fa8', marginBottom: '20px' }}>
               {DAY_NAMES[modal.dayIdx]} בשעה {modal.hour}
             </p>
 
@@ -287,13 +323,13 @@ export default function Schedule() {
               style={{
                 width: '100%',
                 padding: '10px 16px',
-                borderRadius: '12px',
+                borderRadius: '14px',
                 fontSize: '14px',
                 outline: 'none',
                 marginBottom: '12px',
-                border: '1.5px solid rgba(34,139,120,0.2)',
-                background: '#f8fdfc',
-                color: '#2a3b33',
+                border: '1.5px solid rgba(91,155,213,0.25)',
+                background: '#f0f6fd',
+                color: '#2a3a4a',
                 boxSizing: 'border-box',
               }}
             >
@@ -314,13 +350,13 @@ export default function Schedule() {
               style={{
                 width: '100%',
                 padding: '10px 16px',
-                borderRadius: '12px',
+                borderRadius: '14px',
                 fontSize: '14px',
                 outline: 'none',
                 marginBottom: '20px',
-                border: '1.5px solid rgba(34,139,120,0.2)',
-                background: '#f8fdfc',
-                color: '#2a3b33',
+                border: '1.5px solid rgba(91,155,213,0.25)',
+                background: '#f0f6fd',
+                color: '#2a3a4a',
                 boxSizing: 'border-box',
               }}
             />
@@ -331,13 +367,14 @@ export default function Schedule() {
                 style={{
                   flex: 1,
                   padding: '12px 0',
-                  borderRadius: '12px',
+                  borderRadius: '14px',
                   fontSize: '14px',
                   fontWeight: 700,
                   color: 'white',
                   border: 'none',
                   cursor: 'pointer',
-                  background: 'linear-gradient(135deg, #228b78, #2ba08a)',
+                  background: 'linear-gradient(135deg, #5b9bd5, #4a8ac7)',
+                  boxShadow: '0 4px 14px rgba(91,155,213,0.35)',
                   boxSizing: 'border-box',
                 }}
               >
@@ -348,13 +385,13 @@ export default function Schedule() {
                 style={{
                   flex: 1,
                   padding: '12px 0',
-                  borderRadius: '12px',
+                  borderRadius: '14px',
                   fontSize: '14px',
                   fontWeight: 600,
                   border: 'none',
                   cursor: 'pointer',
-                  background: 'rgba(34,139,120,0.08)',
-                  color: '#5a8a78',
+                  background: 'rgba(91,155,213,0.08)',
+                  color: '#5b9bd5',
                   boxSizing: 'border-box',
                 }}
               >

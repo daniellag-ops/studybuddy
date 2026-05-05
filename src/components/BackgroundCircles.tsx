@@ -14,40 +14,40 @@ export default function BackgroundCircles() {
         className="bg-circle-1"
         style={{
           position: 'absolute',
-          width: '380px',
-          height: '380px',
+          width: '420px',
+          height: '420px',
           borderRadius: '50%',
-          opacity: 0.18,
-          filter: 'blur(60px)',
-          background: '#2ba08a',
-          top: '-80px',
-          right: '-40px',
+          opacity: 0.22,
+          filter: 'blur(70px)',
+          background: '#5b9bd5',
+          top: '-100px',
+          right: '-60px',
         }}
       />
       <div
         className="bg-circle-2"
         style={{
           position: 'absolute',
-          width: '320px',
-          height: '320px',
+          width: '340px',
+          height: '340px',
           borderRadius: '50%',
-          opacity: 0.13,
-          filter: 'blur(60px)',
-          background: '#3581b8',
+          opacity: 0.15,
+          filter: 'blur(65px)',
+          background: '#7bb8e8',
           bottom: '10%',
-          left: '-40px',
+          left: '-50px',
         }}
       />
       <div
         className="bg-circle-3"
         style={{
           position: 'absolute',
-          width: '280px',
-          height: '280px',
+          width: '300px',
+          height: '300px',
           borderRadius: '50%',
-          opacity: 0.13,
+          opacity: 0.14,
           filter: 'blur(60px)',
-          background: '#3aaa6d',
+          background: '#4a8ac7',
           top: '40%',
           right: '30%',
         }}

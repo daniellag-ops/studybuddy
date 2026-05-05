@@ -12,16 +12,16 @@ const STRESS_LEVELS = [
   { label: '🙂 בסדר', value: 2, color: '#228b78', advice: 'אתם על המסלול הנכון! קצת הפסקה ומשקאות יכולים לעזור לשמור על הרמה הזו.' },
   { label: '😐 לחוץ קצת', value: 3, color: '#d4960a', advice: 'נסו לעשות הפסקה קצרה. טכניקת הפומודורו יכולה לעזור לנהל את הזמן טוב יותר.' },
   { label: '😰 לחוץ', value: 4, color: '#e07a1a', advice: 'אנחנו מבינים. נסו נשימה עמוקה (4-7-8), תפרקו משימות גדולות לקטנות, ואל תשכחו לישון.' },
-  { label: '🤯 על הקצה', value: 5, color: '#e05555', advice: 'עצרו רגע. שוחחו עם מישהו שאתם סומכים עליו, צאו להליכה קצרה, ותזכרו: זה זמני.' },
+  { label: '🤯 על הקצה', value: 5, color: '#e05555', advice: 'עצרו רגע. שוחחו עם מישהו שאתם סומכים עליהם, צאו להליכה קצרה, ותזכרו: זה זמני.' },
 ]
 
 const card: React.CSSProperties = {
   width: '100%',
   boxSizing: 'border-box',
   background: 'white',
-  borderRadius: '18px',
-  border: '1px solid rgba(34,139,120,0.08)',
-  boxShadow: '0 2px 12px rgba(34,139,120,0.08)',
+  borderRadius: '24px',
+  border: '1px solid rgba(91,155,213,0.12)',
+  boxShadow: '0 4px 18px rgba(91,155,213,0.1)',
 }
 
 export default function Dashboard() {
@@ -51,9 +51,9 @@ export default function Dashboard() {
   const currentStress = STRESS_LEVELS.find(s => s.value === stress) || STRESS_LEVELS[0]
 
   const stats = [
-    { label: 'משימות פתוחות', value: openTasks.length, color: '#3581b8' },
+    { label: 'משימות פתוחות', value: openTasks.length, color: '#5b9bd5' },
     { label: 'הושלמו', value: completedTasks.length, color: '#3aaa6d' },
-    { label: 'סה״כ משימות', value: tasks.length, color: '#228b78' },
+    { label: 'סה״כ משימות', value: tasks.length, color: '#4a8ac7' },
     { label: 'רמת לחץ', value: currentStress.label, color: currentStress.color },
   ]
 
@@ -62,28 +62,43 @@ export default function Dashboard() {
       className="fade-in"
       style={{ maxWidth: '1200px', margin: '0 auto', padding: '24px', width: '100%', boxSizing: 'border-box' }}
     >
-      {/* Welcome heading */}
-      <h1
-        style={{ color: '#2a3b33', textAlign: 'center', width: '100%', fontSize: '28px', fontWeight: 800, marginBottom: '24px' }}
-      >
-        היי! ברוכים הבאים ל-StudyBuddy 🌿
-      </h1>
+      {/* Hero */}
+      <div style={{ textAlign: 'center', marginBottom: '32px', paddingTop: '8px' }}>
+        <p style={{ fontSize: '17px', color: '#6a8fa8', marginBottom: '6px', fontWeight: 600 }}>
+          !ברוכים הבאים
+        </p>
+        <h1
+          style={{
+            fontSize: '48px',
+            fontWeight: 900,
+            color: '#5b9bd5',
+            marginBottom: '8px',
+            letterSpacing: '-1.5px',
+            lineHeight: 1,
+          }}
+        >
+          StudyBuddy
+        </h1>
+        <p style={{ fontSize: '16px', color: '#6a8fa8', fontWeight: 600 }}>
+          !ניהול זמן בלי בלגן
+        </p>
+      </div>
 
-      {/* Stats row — 4 equal columns */}
+      {/* Stats row */}
       <div
         style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px', width: '100%', marginBottom: '16px' }}
       >
         {stats.map((s, i) => (
           <div key={i} style={{ ...card, padding: '16px', textAlign: 'center' }}>
             <div style={{ fontSize: '24px', fontWeight: 700, color: s.color }}>{s.value}</div>
-            <div style={{ fontSize: '13px', marginTop: '4px', color: '#5a8a78' }}>{s.label}</div>
+            <div style={{ fontSize: '13px', marginTop: '4px', color: '#6a8fa8' }}>{s.label}</div>
           </div>
         ))}
       </div>
 
-      {/* Stress Meter — full width */}
+      {/* Stress Meter */}
       <div style={{ ...card, padding: '20px', marginBottom: '16px' }}>
-        <h2 style={{ fontSize: '17px', fontWeight: 700, color: '#2a3b33', marginBottom: '16px' }}>מד לחץ</h2>
+        <h2 style={{ fontSize: '17px', fontWeight: 700, color: '#2a3a4a', marginBottom: '16px' }}>מד לחץ</h2>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '16px' }}>
           {STRESS_LEVELS.map(level => (
             <button
@@ -91,14 +106,15 @@ export default function Dashboard() {
               onClick={() => setStress(level.value)}
               style={{
                 padding: '8px 16px',
-                borderRadius: '12px',
+                borderRadius: '14px',
                 fontSize: '14px',
                 fontWeight: 600,
                 cursor: 'pointer',
                 transition: 'all 0.2s',
-                background: stress === level.value ? level.color : 'rgba(34,139,120,0.06)',
-                color: stress === level.value ? 'white' : '#2a3b33',
-                border: stress === level.value ? 'none' : '1px solid rgba(34,139,120,0.15)',
+                background: stress === level.value ? level.color : 'rgba(91,155,213,0.06)',
+                color: stress === level.value ? 'white' : '#2a3a4a',
+                border: stress === level.value ? 'none' : '1px solid rgba(91,155,213,0.15)',
+                boxShadow: stress === level.value ? `0 4px 12px ${level.color}44` : 'none',
               }}
             >
               {level.label}
@@ -119,13 +135,13 @@ export default function Dashboard() {
         <p style={{ fontSize: '14px', fontWeight: 500, color: currentStress.color }}>{currentStress.advice}</p>
       </div>
 
-      {/* Bottom row — 2 equal columns */}
+      {/* Bottom row */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', width: '100%' }}>
         {/* Urgent tasks */}
         <div style={{ ...card, padding: '20px' }}>
-          <h2 style={{ fontSize: '17px', fontWeight: 700, color: '#2a3b33', marginBottom: '16px' }}>🔥 משימות דחופות</h2>
+          <h2 style={{ fontSize: '17px', fontWeight: 700, color: '#2a3a4a', marginBottom: '16px' }}>🔥 משימות דחופות</h2>
           {urgentOpen.length === 0 ? (
-            <p style={{ fontSize: '14px', color: '#5a8a78' }}>אין משימות דחופות פתוחות ✓</p>
+            <p style={{ fontSize: '14px', color: '#6a8fa8' }}>אין משימות דחופות פתוחות ✓</p>
           ) : (
             <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '8px' }}>
               {urgentOpen.map(task => (
@@ -136,7 +152,7 @@ export default function Dashboard() {
                     alignItems: 'center',
                     gap: '12px',
                     padding: '8px 12px',
-                    borderRadius: '12px',
+                    borderRadius: '14px',
                     fontSize: '14px',
                     background: 'rgba(224,85,85,0.06)',
                     borderRight: '3px solid #e05555',
@@ -154,9 +170,9 @@ export default function Dashboard() {
 
         {/* Today's schedule */}
         <div style={{ ...card, padding: '20px' }}>
-          <h2 style={{ fontSize: '17px', fontWeight: 700, color: '#2a3b33', marginBottom: '16px' }}>📅 לוח היום</h2>
+          <h2 style={{ fontSize: '17px', fontWeight: 700, color: '#2a3a4a', marginBottom: '16px' }}>📅 לוח היום</h2>
           {todayItems.length === 0 ? (
-            <p style={{ fontSize: '14px', color: '#5a8a78' }}>אין אירועים היום</p>
+            <p style={{ fontSize: '14px', color: '#6a8fa8' }}>אין אירועים היום</p>
           ) : (
             <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '8px' }}>
               {todayItems.map((item, i) => item.kind === 'event' ? (
@@ -167,13 +183,13 @@ export default function Dashboard() {
                     alignItems: 'center',
                     gap: '12px',
                     padding: '8px 12px',
-                    borderRadius: '12px',
+                    borderRadius: '14px',
                     fontSize: '14px',
-                    background: 'rgba(34,139,120,0.05)',
+                    background: 'rgba(91,155,213,0.05)',
                     borderRight: `3px solid ${item.ev.categoryColor}`,
                   }}
                 >
-                  <span style={{ fontWeight: 600, fontSize: '12px', color: '#5a8a78', flexShrink: 0 }}>{item.time}</span>
+                  <span style={{ fontWeight: 600, fontSize: '12px', color: '#6a8fa8', flexShrink: 0 }}>{item.time}</span>
                   <span>{item.ev.categoryEmoji} {item.ev.activity}</span>
                 </li>
               ) : (
@@ -184,15 +200,15 @@ export default function Dashboard() {
                     alignItems: 'center',
                     gap: '12px',
                     padding: '8px 12px',
-                    borderRadius: '12px',
+                    borderRadius: '14px',
                     fontSize: '14px',
-                    background: 'rgba(34,139,120,0.04)',
+                    background: 'rgba(91,155,213,0.04)',
                     borderRight: `3px solid ${PRIORITY_COLORS[item.task.priority]}`,
                     opacity: item.task.done ? 0.55 : 1,
                     textDecoration: item.task.done ? 'line-through' : 'none',
                   }}
                 >
-                  <span style={{ fontWeight: 600, fontSize: '12px', color: '#5a8a78', flexShrink: 0 }}>{item.time}</span>
+                  <span style={{ fontWeight: 600, fontSize: '12px', color: '#6a8fa8', flexShrink: 0 }}>{item.time}</span>
                   <span>✅ {item.task.text}</span>
                 </li>
               ))}

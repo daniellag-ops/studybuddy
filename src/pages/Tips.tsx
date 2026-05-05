@@ -50,7 +50,7 @@ export default function Tips() {
       className="fade-in"
       style={{ maxWidth: '1200px', margin: '0 auto', padding: '24px', width: '100%', boxSizing: 'border-box' }}
     >
-      <h1 style={{ fontSize: '28px', fontWeight: 800, color: '#2a3b33', marginBottom: '24px' }}>
+      <h1 style={{ fontSize: '28px', fontWeight: 800, color: '#2a3a4a', marginBottom: '24px' }}>
         💡 טיפים
       </h1>
 
@@ -62,14 +62,15 @@ export default function Tips() {
             onClick={() => setActiveFilter(label)}
             style={{
               padding: '8px 16px',
-              borderRadius: '12px',
+              borderRadius: '14px',
               fontSize: '14px',
               fontWeight: 600,
               cursor: 'pointer',
               transition: 'all 0.2s',
-              background: activeFilter === label ? 'linear-gradient(135deg, #228b78, #2ba08a)' : 'rgba(34,139,120,0.06)',
-              color: activeFilter === label ? 'white' : '#5a8a78',
-              border: activeFilter === label ? 'none' : '1px solid rgba(34,139,120,0.15)',
+              background: activeFilter === label ? 'linear-gradient(135deg, #5b9bd5, #4a8ac7)' : 'rgba(91,155,213,0.08)',
+              color: activeFilter === label ? 'white' : '#5b9bd5',
+              border: activeFilter === label ? 'none' : '1px solid rgba(91,155,213,0.2)',
+              boxShadow: activeFilter === label ? '0 4px 12px rgba(91,155,213,0.25)' : 'none',
               boxSizing: 'border-box',
             }}
           >
@@ -78,7 +79,7 @@ export default function Tips() {
         ))}
       </div>
 
-      {/* Tips grid — responsive via CSS class in index.css */}
+      {/* Tips grid */}
       <div className="tips-grid">
         {filtered.map((tip, i) => (
           <div
@@ -88,18 +89,18 @@ export default function Tips() {
               width: '100%',
               boxSizing: 'border-box',
               background: 'white',
-              borderRadius: '18px',
+              borderRadius: '24px',
               padding: '24px',
-              border: '1px solid rgba(34,139,120,0.08)',
-              boxShadow: '0 2px 12px rgba(34,139,120,0.06)',
+              border: '1px solid rgba(91,155,213,0.1)',
+              boxShadow: '0 4px 16px rgba(91,155,213,0.08)',
               borderTop: `3px solid ${tip.borderColor}`,
             }}
           >
             <div style={{ fontSize: '32px', marginBottom: '12px' }}>{tip.emoji}</div>
-            <h3 style={{ fontSize: '15px', fontWeight: 700, color: '#2a3b33', marginBottom: '8px' }}>
+            <h3 style={{ fontSize: '15px', fontWeight: 700, color: '#2a3a4a', marginBottom: '8px' }}>
               {tip.title}
             </h3>
-            <p style={{ fontSize: '13px', lineHeight: '1.6', color: '#5a8a78' }}>
+            <p style={{ fontSize: '13px', lineHeight: '1.6', color: '#6a8fa8' }}>
               {tip.description}
             </p>
           </div>
