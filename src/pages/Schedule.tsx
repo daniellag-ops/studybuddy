@@ -116,7 +116,7 @@ export default function Schedule() {
               boxShadow: weekOffset === 0 ? '0 3px 10px rgba(91,155,213,0.3)' : 'none',
             }}
           >
-            היום
+            השבוע
           </button>
           <button style={navBtn} onClick={() => setWeekOffset(w => w - 1)}>›</button>
           <button style={navBtn} onClick={() => setWeekOffset(w => w + 1)}>‹</button>
