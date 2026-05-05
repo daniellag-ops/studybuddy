@@ -99,9 +99,7 @@ export default function Dashboard() {
       </div>
 
       {/* Stats row */}
-      <div
-        style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px', width: '100%', marginBottom: '16px' }}
-      >
+      <div className="stats-grid">
         {stats.map((s, i) => (
           <div key={i} style={{ ...card, padding: '16px', textAlign: 'center' }}>
             <div style={{ fontSize: '24px', fontWeight: 700, color: s.color }}>{s.value}</div>
@@ -146,7 +144,7 @@ export default function Dashboard() {
             }}
           />
         </div>
-        <p style={{ fontSize: '14px', fontWeight: 500, color: currentStress.color }}>{currentStress.advice}</p>
+        <p style={{ fontSize: '14px', fontWeight: 500, color: currentStress.color, marginBottom: '16px' }}>{currentStress.advice}</p>
       </div>
 
       {/* Bottom row */}

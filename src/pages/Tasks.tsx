@@ -89,45 +89,46 @@ export default function Tasks() {
       </h1>
 
       {/* Add form */}
-      <div style={{ ...card, padding: '20px', marginBottom: '16px' }}>
-        <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'center', width: '100%', boxSizing: 'border-box' }}>
+      <div className="task-form-card" style={{ ...card, padding: '20px', marginBottom: '16px' }}>
+        <div className="task-form-fields">
           <input
             type="text"
+            className="task-text-input"
             value={text}
             onChange={e => setText(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && addTask()}
             placeholder="הוסיפו משימה חדשה..."
-            style={{ ...inputStyle, flex: '1 1 200px', minWidth: 0 }}
+            style={{ ...inputStyle }}
           />
-          <select
-            value={priority}
-            onChange={e => setPriority(e.target.value as Priority)}
-            style={{
-              ...inputStyle,
-              fontWeight: 600,
-              cursor: 'pointer',
-              color: PRIORITY_COLORS[priority],
-            }}
-          >
-            <option value="דחוף">דחוף</option>
-            <option value="בינוני">בינוני</option>
-            <option value="רגיל">רגיל</option>
-          </select>
-          <input
-            type="date"
-            value={dueDate}
-            onChange={e => setDueDate(e.target.value)}
-            style={{ ...inputStyle, cursor: 'pointer', color: dueDate ? '#2a3a4a' : '#6a8fa8' }}
-          />
-          {dueDate && (
+          <div className="task-form-meta">
+            <select
+              value={priority}
+              onChange={e => setPriority(e.target.value as Priority)}
+              style={{ ...inputStyle, fontWeight: 600, cursor: 'pointer', color: PRIORITY_COLORS[priority] }}
+            >
+              <option value="דחוף">דחוף</option>
+              <option value="בינוני">בינוני</option>
+              <option value="רגיל">רגיל</option>
+            </select>
             <input
-              type="time"
-              value={dueTime}
-              onChange={e => setDueTime(e.target.value)}
-              style={{ ...inputStyle, cursor: 'pointer' }}
+              type="date"
+              value={dueDate}
+              onChange={e => setDueDate(e.target.value)}
+              title="תאריך (אופציונלי)"
+              placeholder="תאריך (אופציונלי)"
+              style={{ ...inputStyle, cursor: 'pointer', color: dueDate ? '#2a3a4a' : '#6a8fa8' }}
             />
-          )}
+            {dueDate && (
+              <input
+                type="time"
+                value={dueTime}
+                onChange={e => setDueTime(e.target.value)}
+                style={{ ...inputStyle, cursor: 'pointer' }}
+              />
+            )}
+          </div>
           <button
+            className="task-add-btn"
             onClick={addTask}
             style={{
               padding: '10px 20px',
