@@ -45,7 +45,7 @@ export default function About() {
       </h2>
       <div style={{ ...card, padding: '20px 28px', marginBottom: '24px' }}>
         <p style={{ fontSize: '16px', color: '#2a3a4a', fontWeight: 600 }}>
-          מאיה, אלה, נהורי, לילך ונתנאל — כיתה ח׳
+          מיה, אלה, נהורי, לילך ונתנאל — כיתה ח׳
         </p>
       </div>
 
