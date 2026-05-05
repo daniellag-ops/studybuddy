@@ -5,6 +5,7 @@ import Dashboard from './pages/Dashboard'
 import Tasks from './pages/Tasks'
 import Schedule from './pages/Schedule'
 import Tips from './pages/Tips'
+import About from './pages/About'
 
 export default function App() {
   return (
@@ -18,6 +19,7 @@ export default function App() {
               <Route path="/tasks" element={<Tasks />} />
               <Route path="/schedule" element={<Schedule />} />
               <Route path="/tips" element={<Tips />} />
+              <Route path="/about" element={<About />} />
             </Routes>
           </main>
         </div>

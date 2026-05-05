@@ -5,6 +5,7 @@ const TABS = [
   { to: '/tasks', label: 'משימות', icon: '✅' },
   { to: '/schedule', label: 'לו״ז', icon: '📅' },
   { to: '/tips', label: 'טיפים', icon: '💡' },
+  { to: '/about', label: 'אנחנו', icon: '👥' },
 ]
 
 export default function BottomNav() {
