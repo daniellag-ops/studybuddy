@@ -1,6 +1,12 @@
 import React, { useState } from 'react'
 import { useLocalStorage } from '../hooks/useLocalStorage'
-import type { ScheduleData, ScheduleEvent } from '../types'
+import type { ScheduleData, ScheduleEvent, Task, Priority } from '../types'
+
+const PRIORITY_COLORS: Record<Priority, string> = {
+  'דחוף': '#e05555',
+  'בינוני': '#d4960a',
+  'רגיל': '#3aaa6d',
+}
 
 const DAY_NAMES = ['ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי', 'שבת']
 const HOURS = Array.from({ length: 15 }, (_, i) => `${String(i + 7).padStart(2, '0')}:00`)
@@ -32,6 +38,7 @@ interface ModalState {
 
 export default function Schedule() {
   const [schedule, setSchedule] = useLocalStorage<ScheduleData>('sb_schedule', {})
+  const [tasks, setTasks] = useLocalStorage<Task[]>('sb_tasks', [])
   const [weekOffset, setWeekOffset] = useState(0)
   const [modal, setModal] = useState<ModalState | null>(null)
   const [newActivity, setNewActivity] = useState('')
@@ -47,6 +54,20 @@ export default function Schedule() {
 
   const getCellEvents = (dayIdx: number, hour: string): ScheduleEvent[] =>
     (schedule[dayIdx] || []).filter(e => e.time === hour)
+
+  const dateStr = (date: Date) =>
+    `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+
+  const getCellTasks = (date: Date, hour: string): Task[] =>
+    tasks.filter(t => {
+      if (!t.dueDate) return false
+      if (t.dueDate !== dateStr(date)) return false
+      const taskHour = (t.dueTime || '09:00').slice(0, 2) + ':00'
+      return taskHour === hour
+    })
+
+  const toggleTask = (id: string) =>
+    setTasks(prev => prev.map(t => t.id === id ? { ...t, done: !t.done } : t))
 
   const addEvent = () => {
     if (!modal || !newActivity.trim()) return
@@ -158,8 +179,9 @@ export default function Schedule() {
               >
                 {hour}
               </div>
-              {weekDates.map((_, dayIdx) => {
+              {weekDates.map((date, dayIdx) => {
                 const events = getCellEvents(dayIdx, hour)
+                const cellTasks = getCellTasks(date, hour)
                 return (
                   <div
                     key={dayIdx}
@@ -194,6 +216,27 @@ export default function Schedule() {
                         >
                           ✕
                         </button>
+                      </div>
+                    ))}
+                    {cellTasks.map(task => (
+                      <div
+                        key={task.id}
+                        className="rounded-lg px-1.5 py-0.5 mb-0.5 flex items-center gap-1 text-xs"
+                        style={{
+                          background: 'rgba(34,139,120,0.06)',
+                          borderRight: `3px solid ${PRIORITY_COLORS[task.priority]}`,
+                          color: '#2a3b33',
+                          opacity: task.done ? 0.5 : 1,
+                          cursor: 'pointer',
+                          textDecoration: task.done ? 'line-through' : 'none',
+                        }}
+                        onClick={e => {
+                          e.stopPropagation()
+                          toggleTask(task.id)
+                        }}
+                      >
+                        <span>✅</span>
+                        <span className="flex-1 truncate">{task.text}</span>
                       </div>
                     ))}
                   </div>

@@ -6,6 +6,8 @@ export interface Task {
   priority: Priority
   done: boolean
   createdAt: string
+  dueDate?: string
+  dueTime?: string
 }
 
 export interface ScheduleEvent {

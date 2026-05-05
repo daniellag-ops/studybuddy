@@ -30,6 +30,8 @@ export default function Tasks() {
   const [text, setText] = useState('')
   const [priority, setPriority] = useState<Priority>('בינוני')
   const [filter, setFilter] = useState<Filter>('הכל')
+  const [dueDate, setDueDate] = useState('')
+  const [dueTime, setDueTime] = useState('09:00')
 
   const addTask = () => {
     if (!text.trim()) return
@@ -39,8 +41,11 @@ export default function Tasks() {
       priority,
       done: false,
       createdAt: new Date().toISOString(),
+      ...(dueDate ? { dueDate, dueTime } : {}),
     }, ...prev])
     setText('')
+    setDueDate('')
+    setDueTime('09:00')
   }
 
   const toggleTask = (id: string) =>
@@ -114,6 +119,40 @@ export default function Tasks() {
             <option value="בינוני">בינוני</option>
             <option value="רגיל">רגיל</option>
           </select>
+          <input
+            type="date"
+            value={dueDate}
+            onChange={e => setDueDate(e.target.value)}
+            style={{
+              padding: '10px 12px',
+              borderRadius: '12px',
+              fontSize: '14px',
+              outline: 'none',
+              border: '1.5px solid rgba(34,139,120,0.2)',
+              background: '#f8fdfc',
+              color: dueDate ? '#2a3b33' : '#5a8a78',
+              boxSizing: 'border-box',
+              cursor: 'pointer',
+            }}
+          />
+          {dueDate && (
+            <input
+              type="time"
+              value={dueTime}
+              onChange={e => setDueTime(e.target.value)}
+              style={{
+                padding: '10px 12px',
+                borderRadius: '12px',
+                fontSize: '14px',
+                outline: 'none',
+                border: '1.5px solid rgba(34,139,120,0.2)',
+                background: '#f8fdfc',
+                color: '#2a3b33',
+                boxSizing: 'border-box',
+                cursor: 'pointer',
+              }}
+            />
+          )}
           <button
             onClick={addTask}
             style={{
@@ -196,6 +235,11 @@ export default function Tasks() {
             >
               {task.text}
             </span>
+            {task.dueDate && (
+              <span style={{ fontSize: '12px', color: '#5a8a78', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '3px' }}>
+                📅 {task.dueDate} {task.dueTime}
+              </span>
+            )}
             <span
               style={{
                 fontSize: '12px',

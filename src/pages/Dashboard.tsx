@@ -1,5 +1,11 @@
 import { useLocalStorage } from '../hooks/useLocalStorage'
-import type { Task, ScheduleData, ScheduleEvent } from '../types'
+import type { Task, ScheduleData, ScheduleEvent, Priority } from '../types'
+
+const PRIORITY_COLORS: Record<Priority, string> = {
+  'דחוף': '#e05555',
+  'בינוני': '#d4960a',
+  'רגיל': '#3aaa6d',
+}
 
 const STRESS_LEVELS = [
   { label: '😌 רגוע', value: 1, color: '#3aaa6d', advice: 'מעולה! אתם במצב מצוין. המשיכו לשמור על שגרה מאוזנת ותשמרו על האנרגיה הזו.' },
@@ -28,9 +34,19 @@ export default function Dashboard() {
   const urgentOpen = openTasks.filter(t => t.priority === 'דחוף').slice(0, 4)
 
   const todayIdx = new Date().getDay()
-  const todayEvents: ScheduleEvent[] = [...(schedule[todayIdx] || [])].sort((a, b) =>
-    a.time.localeCompare(b.time)
-  )
+  const todayDateStr = (() => {
+    const d = new Date()
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+  })()
+
+  type ScheduleItem =
+    | { kind: 'event'; time: string; ev: ScheduleEvent }
+    | { kind: 'task'; time: string; task: Task }
+
+  const todayItems: ScheduleItem[] = [
+    ...(schedule[todayIdx] || []).map(ev => ({ kind: 'event' as const, time: ev.time, ev })),
+    ...tasks.filter(t => t.dueDate === todayDateStr).map(t => ({ kind: 'task' as const, time: t.dueTime || '09:00', task: t })),
+  ].sort((a, b) => a.time.localeCompare(b.time))
 
   const currentStress = STRESS_LEVELS.find(s => s.value === stress) || STRESS_LEVELS[0]
 
@@ -139,11 +155,11 @@ export default function Dashboard() {
         {/* Today's schedule */}
         <div style={{ ...card, padding: '20px' }}>
           <h2 style={{ fontSize: '17px', fontWeight: 700, color: '#2a3b33', marginBottom: '16px' }}>📅 לוח היום</h2>
-          {todayEvents.length === 0 ? (
+          {todayItems.length === 0 ? (
             <p style={{ fontSize: '14px', color: '#5a8a78' }}>אין אירועים היום</p>
           ) : (
             <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              {todayEvents.map((ev, i) => (
+              {todayItems.map((item, i) => item.kind === 'event' ? (
                 <li
                   key={i}
                   style={{
@@ -154,11 +170,30 @@ export default function Dashboard() {
                     borderRadius: '12px',
                     fontSize: '14px',
                     background: 'rgba(34,139,120,0.05)',
-                    borderRight: `3px solid ${ev.categoryColor}`,
+                    borderRight: `3px solid ${item.ev.categoryColor}`,
                   }}
                 >
-                  <span style={{ fontWeight: 600, fontSize: '12px', color: '#5a8a78', flexShrink: 0 }}>{ev.time}</span>
-                  <span>{ev.categoryEmoji} {ev.activity}</span>
+                  <span style={{ fontWeight: 600, fontSize: '12px', color: '#5a8a78', flexShrink: 0 }}>{item.time}</span>
+                  <span>{item.ev.categoryEmoji} {item.ev.activity}</span>
+                </li>
+              ) : (
+                <li
+                  key={i}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '12px',
+                    padding: '8px 12px',
+                    borderRadius: '12px',
+                    fontSize: '14px',
+                    background: 'rgba(34,139,120,0.04)',
+                    borderRight: `3px solid ${PRIORITY_COLORS[item.task.priority]}`,
+                    opacity: item.task.done ? 0.55 : 1,
+                    textDecoration: item.task.done ? 'line-through' : 'none',
+                  }}
+                >
+                  <span style={{ fontWeight: 600, fontSize: '12px', color: '#5a8a78', flexShrink: 0 }}>{item.time}</span>
+                  <span>✅ {item.task.text}</span>
                 </li>
               ))}
             </ul>
