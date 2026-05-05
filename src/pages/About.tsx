@@ -53,15 +53,7 @@ export default function About() {
       <h2 style={{ fontSize: '22px', fontWeight: 800, fontStyle: 'italic', color: '#2a3a4a', marginBottom: '16px' }}>
         למה StudyBuddy?
       </h2>
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(3, 1fr)',
-          gap: '16px',
-          marginBottom: '24px',
-          width: '100%',
-        }}
-      >
+      <div className="tips-grid" style={{ marginBottom: '24px' }}>
         {WHY.map(item => (
           <div key={item.title} style={{ ...card, padding: '24px' }}>
             <div style={{ fontSize: '36px', marginBottom: '12px' }}>{item.emoji}</div>
@@ -80,6 +72,7 @@ export default function About() {
         style={{
           ...card,
           padding: '28px',
+          marginBottom: '16px',
           textAlign: 'center',
           background: 'linear-gradient(135deg, #5b9bd5 0%, #4a8ac7 100%)',
           border: 'none',
