@@ -1,5 +1,6 @@
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import type { Task, ScheduleData, ScheduleEvent, Priority } from '../types'
+import ClockIllustration from '../components/ClockIllustration'
 
 const PRIORITY_COLORS: Record<Priority, string> = {
   'דחוף': '#e05555',
@@ -63,25 +64,38 @@ export default function Dashboard() {
       style={{ maxWidth: '1200px', margin: '0 auto', padding: '24px', width: '100%', boxSizing: 'border-box' }}
     >
       {/* Hero */}
-      <div style={{ textAlign: 'center', marginBottom: '32px', paddingTop: '8px' }}>
-        <p style={{ fontSize: '17px', color: '#6a8fa8', marginBottom: '6px', fontWeight: 600 }}>
+      <div style={{ textAlign: 'center', marginBottom: '28px', paddingTop: '4px' }}>
+        <p style={{
+          fontSize: '20px',
+          color: '#5b9bd5',
+          fontStyle: 'italic',
+          fontWeight: 700,
+          marginBottom: '4px',
+        }}>
           !ברוכים הבאים
         </p>
-        <h1
-          style={{
-            fontSize: '48px',
-            fontWeight: 900,
-            color: '#5b9bd5',
-            marginBottom: '8px',
-            letterSpacing: '-1.5px',
-            lineHeight: 1,
-          }}
-        >
+        <h1 style={{
+          fontSize: '52px',
+          fontWeight: 900,
+          color: '#5b9bd5',
+          fontStyle: 'italic',
+          letterSpacing: '-2px',
+          lineHeight: 1,
+          marginBottom: '8px',
+        }}>
           StudyBuddy
         </h1>
-        <p style={{ fontSize: '16px', color: '#6a8fa8', fontWeight: 600 }}>
+        <p style={{
+          fontSize: '16px',
+          color: '#6a8a9a',
+          fontWeight: 600,
+          marginBottom: '24px',
+        }}>
           !ניהול זמן בלי בלגן
         </p>
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <ClockIllustration />
+        </div>
       </div>
 
       {/* Stats row */}
@@ -91,14 +105,14 @@ export default function Dashboard() {
         {stats.map((s, i) => (
           <div key={i} style={{ ...card, padding: '16px', textAlign: 'center' }}>
             <div style={{ fontSize: '24px', fontWeight: 700, color: s.color }}>{s.value}</div>
-            <div style={{ fontSize: '13px', marginTop: '4px', color: '#6a8fa8' }}>{s.label}</div>
+            <div style={{ fontSize: '13px', marginTop: '4px', color: '#6a8a9a' }}>{s.label}</div>
           </div>
         ))}
       </div>
 
       {/* Stress Meter */}
       <div style={{ ...card, padding: '20px', marginBottom: '16px' }}>
-        <h2 style={{ fontSize: '17px', fontWeight: 700, color: '#2a3a4a', marginBottom: '16px' }}>מד לחץ</h2>
+        <h2 style={{ fontSize: '17px', fontWeight: 700, fontStyle: 'italic', color: '#2a3a4a', marginBottom: '16px' }}>מד לחץ</h2>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '16px' }}>
           {STRESS_LEVELS.map(level => (
             <button
@@ -139,9 +153,9 @@ export default function Dashboard() {
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', width: '100%' }}>
         {/* Urgent tasks */}
         <div style={{ ...card, padding: '20px' }}>
-          <h2 style={{ fontSize: '17px', fontWeight: 700, color: '#2a3a4a', marginBottom: '16px' }}>🔥 משימות דחופות</h2>
+          <h2 style={{ fontSize: '17px', fontWeight: 700, fontStyle: 'italic', color: '#2a3a4a', marginBottom: '16px' }}>🔥 משימות דחופות</h2>
           {urgentOpen.length === 0 ? (
-            <p style={{ fontSize: '14px', color: '#6a8fa8' }}>אין משימות דחופות פתוחות ✓</p>
+            <p style={{ fontSize: '14px', color: '#6a8a9a' }}>אין משימות דחופות פתוחות ✓</p>
           ) : (
             <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '8px' }}>
               {urgentOpen.map(task => (
@@ -170,9 +184,9 @@ export default function Dashboard() {
 
         {/* Today's schedule */}
         <div style={{ ...card, padding: '20px' }}>
-          <h2 style={{ fontSize: '17px', fontWeight: 700, color: '#2a3a4a', marginBottom: '16px' }}>📅 לוח היום</h2>
+          <h2 style={{ fontSize: '17px', fontWeight: 700, fontStyle: 'italic', color: '#2a3a4a', marginBottom: '16px' }}>📅 לוח היום</h2>
           {todayItems.length === 0 ? (
-            <p style={{ fontSize: '14px', color: '#6a8fa8' }}>אין אירועים היום</p>
+            <p style={{ fontSize: '14px', color: '#6a8a9a' }}>אין אירועים היום</p>
           ) : (
             <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '8px' }}>
               {todayItems.map((item, i) => item.kind === 'event' ? (
@@ -189,7 +203,7 @@ export default function Dashboard() {
                     borderRight: `3px solid ${item.ev.categoryColor}`,
                   }}
                 >
-                  <span style={{ fontWeight: 600, fontSize: '12px', color: '#6a8fa8', flexShrink: 0 }}>{item.time}</span>
+                  <span style={{ fontWeight: 600, fontSize: '12px', color: '#6a8a9a', flexShrink: 0 }}>{item.time}</span>
                   <span>{item.ev.categoryEmoji} {item.ev.activity}</span>
                 </li>
               ) : (
@@ -208,7 +222,7 @@ export default function Dashboard() {
                     textDecoration: item.task.done ? 'line-through' : 'none',
                   }}
                 >
-                  <span style={{ fontWeight: 600, fontSize: '12px', color: '#6a8fa8', flexShrink: 0 }}>{item.time}</span>
+                  <span style={{ fontWeight: 600, fontSize: '12px', color: '#6a8a9a', flexShrink: 0 }}>{item.time}</span>
                   <span>✅ {item.task.text}</span>
                 </li>
               ))}
