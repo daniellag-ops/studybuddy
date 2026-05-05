@@ -135,7 +135,7 @@ export default function Dashboard() {
             </button>
           ))}
         </div>
-        <div style={{ width: '100%', height: '12px', borderRadius: '6px', background: '#e8f3f0', overflow: 'hidden', marginBottom: '12px' }}>
+        <div style={{ direction: 'ltr', width: '100%', height: '12px', borderRadius: '6px', background: '#e8f3f0', overflow: 'hidden', marginBottom: '12px' }}>
           <div
             style={{
               height: '100%',

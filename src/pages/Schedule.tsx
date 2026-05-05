@@ -125,11 +125,14 @@ export default function Schedule() {
 
       {/* Grid card */}
       <div style={{
-        background: 'white', borderRadius: '24px', overflow: 'auto',
+        background: 'white', borderRadius: '24px',
+        overflowX: 'auto', overflowY: 'visible',
         border: `1.5px solid ${GRID_LINE}`,
         boxShadow: '0 4px 20px rgba(91,155,213,0.1)',
+        WebkitOverflowScrolling: 'touch',
+        direction: 'ltr',
       }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '64px repeat(7, minmax(0,1fr))', minWidth: '720px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '64px repeat(7, minmax(100px, 1fr))', minWidth: '720px', direction: 'rtl' }}>
 
           {/* Corner cell */}
           <div style={{ borderBottom: `1px solid ${GRID_LINE}`, borderInlineEnd: `1px solid ${GRID_LINE}`, background: HEADER_BG }} />
