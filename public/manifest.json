@@ -1,0 +1,18 @@
+{
+  "name": "StudyBuddy",
+  "short_name": "StudyBuddy",
+  "description": "ניהול זמן בלי בלגן!",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#dae8f5",
+  "theme_color": "#5b9bd5",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
