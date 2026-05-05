@@ -7,12 +7,7 @@ const TABS = [
   { to: '/tips', label: 'טיפים', icon: '💡' },
 ]
 
-interface Props {
-  chatOpen: boolean
-  onChatToggle: () => void
-}
-
-export default function BottomNav({ chatOpen, onChatToggle }: Props) {
+export default function BottomNav() {
   return (
     <nav className="bottom-nav">
       <div className="bottom-nav-inner">
@@ -27,13 +22,6 @@ export default function BottomNav({ chatOpen, onChatToggle }: Props) {
             <span className="tab-label">{label}</span>
           </NavLink>
         ))}
-        <button
-          className={`tab-btn${chatOpen ? ' active' : ''}`}
-          onClick={onChatToggle}
-        >
-          <div className="tab-icon">💬</div>
-          <span className="tab-label">צ׳אט</span>
-        </button>
       </div>
     </nav>
   )

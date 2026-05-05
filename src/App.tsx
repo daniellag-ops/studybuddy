@@ -1,16 +1,12 @@
-import { useState } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import BottomNav from './components/Navbar'
 import BackgroundCircles from './components/BackgroundCircles'
-import Chatbot from './components/Chatbot'
 import Dashboard from './pages/Dashboard'
 import Tasks from './pages/Tasks'
 import Schedule from './pages/Schedule'
 import Tips from './pages/Tips'
 
 export default function App() {
-  const [chatOpen, setChatOpen] = useState(false)
-
   return (
     <BrowserRouter>
       <div style={{ position: 'relative', minHeight: '100vh', overflowX: 'hidden' }}>
@@ -25,8 +21,7 @@ export default function App() {
             </Routes>
           </main>
         </div>
-        <Chatbot open={chatOpen} setOpen={setChatOpen} />
-        <BottomNav chatOpen={chatOpen} onChatToggle={() => setChatOpen(o => !o)} />
+        <BottomNav />
       </div>
     </BrowserRouter>
   )
