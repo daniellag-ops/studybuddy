@@ -130,12 +130,11 @@ export default function Schedule() {
         border: `1.5px solid ${GRID_LINE}`,
         boxShadow: '0 4px 20px rgba(91,155,213,0.1)',
         WebkitOverflowScrolling: 'touch',
-        direction: 'ltr',
       }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '64px repeat(7, minmax(100px, 1fr))', minWidth: '720px', direction: 'rtl' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '64px repeat(7, 80px)', minWidth: '624px' }}>
 
           {/* Corner cell */}
-          <div style={{ borderBottom: `1px solid ${GRID_LINE}`, borderInlineEnd: `1px solid ${GRID_LINE}`, background: HEADER_BG }} />
+          <div style={{ borderBottom: `1px solid ${GRID_LINE}`, borderInlineEnd: `1px solid ${GRID_LINE}`, background: HEADER_BG, position: 'sticky', right: 0, zIndex: 3 }} />
 
           {/* Day header cells */}
           {weekDates.map((date, i) => (
@@ -175,6 +174,7 @@ export default function Schedule() {
                 borderInlineEnd: `1px solid ${GRID_LINE}`,
                 fontSize: '11px', fontWeight: 600, color: '#6a8a9a',
                 minHeight: '60px', textAlign: 'center', paddingTop: '7px',
+                position: 'sticky', right: 0, zIndex: 2, background: 'white',
               }}>
                 {hour}
               </div>
