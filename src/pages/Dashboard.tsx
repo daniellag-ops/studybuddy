@@ -72,7 +72,7 @@ export default function Dashboard() {
           fontWeight: 700,
           marginBottom: '4px',
         }}>
-          !ברוכים הבאים
+          ברוכים הבאים!
         </p>
         <h1 style={{
           fontSize: '52px',
@@ -91,7 +91,7 @@ export default function Dashboard() {
           fontWeight: 600,
           marginBottom: '24px',
         }}>
-          !ניהול זמן בלי בלגן
+          ניהול זמן בלי בלגן!
         </p>
         <div style={{ display: 'flex', justifyContent: 'center' }}>
           <ClockIllustration />
