@@ -7,18 +7,10 @@ const card: React.CSSProperties = {
   width: '100%',
 }
 
-const TEAM = [
-  { name: 'מאיה', color: '#5b9bd5' },
-  { name: 'אלה', color: '#4a8ac7' },
-  { name: 'נהורי', color: '#228b78' },
-  { name: 'לילך', color: '#d4960a' },
-  { name: 'נתנאל', color: '#e05555' },
-]
-
 const WHY = [
-  { emoji: '🎯', title: 'בנינו את זה בשבילנו', body: 'אנחנו תלמידים בדיוק כמוכם. אנחנו מבינים את האתגרים כי אנחנו חיים אותם כל יום.' },
-  { emoji: '💡', title: 'פשוט ויעיל', body: 'בלי סיבוכים מיותרים. כלים פשוטים שעובדים ועוזרים באמת.' },
-  { emoji: '❤️', title: 'בריאות זה לא מותרות', body: 'ניהול עומס ואורח חיים בריא צריכים להיות נגישים לכל תלמיד.' },
+  { emoji: '🎯', title: 'תכל\'ס, בנינו את זה בשבילנו', body: 'כמי שנמצאים בתוך המערכת, אנחנו מבינים את הלחץ מקרוב. הפתרון שלנו מגיע מתוך הצורך האמיתי שלנו.' },
+  { emoji: '💡', title: 'מקסימום תוצאה, אפס מאמץ', body: 'חלאס עם ממשקים מסובכים. הכלים שלנו חדים, נקיים ועוזרים לכם להספיק יותר בפחות זמן.' },
+  { emoji: '❤️', title: 'שומרים על המיינד', body: 'איזון בין לימודים לנפש הוא הכרחי. אנחנו כאן כדי להפוך את ניהול העומס לנגיש ופשוט עבור כולם.' },
 ]
 
 export default function About() {
@@ -40,57 +32,21 @@ export default function About() {
       {/* Story card */}
       <div style={{ ...card, padding: '28px', marginBottom: '20px' }}>
         <p style={{ fontSize: '16px', lineHeight: 1.8, color: '#2a3a4a', marginBottom: '20px' }}>
-          ראינו שכולם סביבנו — חברים, תלמידים, אנחנו עצמנו — טובעים בעומס. שיעורי בית, מבחנים, חוגים, וחיים שלמים שצריך לנהל. אז החלטנו לעשות משהו עם זה. לא חיכינו שמישהו יבנה את הפתרון. בנינו אותו בעצמנו.
+          זיהינו את האתגר של דורנו: העומס הבלתי פוסק של הלימודים והחיים האישיים. ראינו את הקושי בעיניים של החברים שלנו, והרגשנו אותו בעצמנו. הבנו שאף אחד לא יבנה עבורנו את הכלי שאנחנו באמת צריכים – אז בנינו אותו בעצמנו.
         </p>
         <p style={{ fontSize: '17px', fontWeight: 800, color: '#5b9bd5', fontStyle: 'italic' }}>
-          StudyBuddy — מתלמידים, בשביל תלמידים. 🚀
+          StudyBuddy — פותח על ידי תלמידים, עבור תלמידים. 🚀
         </p>
       </div>
 
       {/* Team section */}
-      <h2 style={{ fontSize: '22px', fontWeight: 800, fontStyle: 'italic', color: '#2a3a4a', marginBottom: '16px' }}>
+      <h2 style={{ fontSize: '22px', fontWeight: 800, fontStyle: 'italic', color: '#2a3a4a', marginBottom: '12px' }}>
         הצוות
       </h2>
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(5, 1fr)',
-          gap: '12px',
-          marginBottom: '24px',
-          width: '100%',
-        }}
-      >
-        {TEAM.map(member => (
-          <div
-            key={member.name}
-            style={{ ...card, padding: '20px 12px', textAlign: 'center' }}
-          >
-            <div
-              style={{
-                width: 64,
-                height: 64,
-                borderRadius: '50%',
-                background: member.color,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                margin: '0 auto 12px',
-                fontSize: '26px',
-                fontWeight: 800,
-                color: 'white',
-                boxShadow: `0 4px 14px ${member.color}55`,
-              }}
-            >
-              {member.name[0]}
-            </div>
-            <div style={{ fontSize: '15px', fontWeight: 700, color: '#2a3a4a', marginBottom: '4px' }}>
-              {member.name}
-            </div>
-            <div style={{ fontSize: '11px', color: '#6a8a9a', fontWeight: 600 }}>
-              שותף/ה מייסד/ת
-            </div>
-          </div>
-        ))}
+      <div style={{ ...card, padding: '20px 28px', marginBottom: '24px' }}>
+        <p style={{ fontSize: '16px', color: '#2a3a4a', fontWeight: 600 }}>
+          מאיה, אלה, נהורי, לילך ונתנאל — כיתה ח׳
+        </p>
       </div>
 
       {/* Why section */}
