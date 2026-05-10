@@ -1,10 +1,11 @@
 const card: React.CSSProperties = {
-  background: 'white',
+  background: 'var(--surface)',
   borderRadius: '24px',
-  border: '1px solid rgba(91,155,213,0.12)',
-  boxShadow: '0 4px 18px rgba(91,155,213,0.1)',
+  border: '1px solid var(--border)',
+  boxShadow: '0 4px 18px var(--shadow)',
   boxSizing: 'border-box',
   width: '100%',
+  transition: 'background-color 0.3s ease',
 }
 
 const WHY = [
@@ -24,14 +25,14 @@ export default function About() {
         <h1 style={{ fontSize: '36px', fontWeight: 900, fontStyle: 'italic', color: '#5b9bd5', marginBottom: '8px' }}>
           מי אנחנו?
         </h1>
-        <p style={{ fontSize: '16px', color: '#6a8a9a', fontWeight: 600 }}>
+        <p style={{ fontSize: '16px', color: 'var(--text-dim)', fontWeight: 600 }}>
           חמישה תלמידים. בעיה אחת. פתרון אחד.
         </p>
       </div>
 
       {/* Story card */}
       <div style={{ ...card, padding: '28px', marginBottom: '20px' }}>
-        <p style={{ fontSize: '16px', lineHeight: 1.8, color: '#2a3a4a', marginBottom: '20px' }}>
+        <p style={{ fontSize: '16px', lineHeight: 1.8, color: 'var(--text)', marginBottom: '20px' }}>
           זיהינו את הבעיה שלנו בדור הזה- העומס של הלימודים ושילוב עם החיים הפרטיים. ראינו את הקושי שלנו ושל חברינו. הבנו שאף אחד לא יבנה עבורנו את האפליקציה שאנחנו באמת צריכים – אז בנינו אותו בעצמנו.
         </p>
         <p style={{ fontSize: '17px', fontWeight: 800, color: '#5b9bd5', fontStyle: 'italic' }}>
@@ -40,27 +41,27 @@ export default function About() {
       </div>
 
       {/* Team section */}
-      <h2 style={{ fontSize: '22px', fontWeight: 800, fontStyle: 'italic', color: '#2a3a4a', marginBottom: '12px' }}>
+      <h2 style={{ fontSize: '22px', fontWeight: 800, fontStyle: 'italic', color: 'var(--text)', marginBottom: '12px' }}>
         הצוות
       </h2>
       <div style={{ ...card, padding: '20px 28px', marginBottom: '24px' }}>
-        <p style={{ fontSize: '16px', color: '#2a3a4a', fontWeight: 600 }}>
+        <p style={{ fontSize: '16px', color: 'var(--text)', fontWeight: 600 }}>
           מיה, אלה, נהורי ולילך — כיתה ח׳
         </p>
       </div>
 
       {/* Why section */}
-      <h2 style={{ fontSize: '22px', fontWeight: 800, fontStyle: 'italic', color: '#2a3a4a', marginBottom: '16px' }}>
+      <h2 style={{ fontSize: '22px', fontWeight: 800, fontStyle: 'italic', color: 'var(--text)', marginBottom: '16px' }}>
         למה StudyBuddy?
       </h2>
       <div className="tips-grid" style={{ marginBottom: '24px' }}>
         {WHY.map(item => (
           <div key={item.title} style={{ ...card, padding: '24px' }}>
             <div style={{ fontSize: '36px', marginBottom: '12px' }}>{item.emoji}</div>
-            <h3 style={{ fontSize: '15px', fontWeight: 700, color: '#2a3a4a', marginBottom: '8px' }}>
+            <h3 style={{ fontSize: '15px', fontWeight: 700, color: 'var(--text)', marginBottom: '8px' }}>
               {item.title}
             </h3>
-            <p style={{ fontSize: '13px', lineHeight: 1.6, color: '#6a8a9a' }}>
+            <p style={{ fontSize: '13px', lineHeight: 1.6, color: 'var(--text-dim)' }}>
               {item.body}
             </p>
           </div>

@@ -1,5 +1,51 @@
 @import "tailwindcss";
 
+:root {
+  --bg: #dae8f5;
+  --surface: #ffffff;
+  --surface-alt: #f7fafc;
+  --surface-2: rgba(91,155,213,0.06);
+  --text: #2a3a4a;
+  --text-dim: #6a8a9a;
+  --primary: #5b9bd5;
+  --primary-dark: #4a8ac7;
+  --border: rgba(91,155,213,0.12);
+  --border-light: rgba(91,155,213,0.2);
+  --shadow: rgba(91,155,213,0.1);
+  --input-bg: #f0f6fd;
+  --input-border: rgba(91,155,213,0.25);
+  --nav-bg: #d5d5d5;
+  --nav-text: #777;
+  --nav-active-bg: #ffffff;
+  --cal-header: #5b9bd5;
+  --cal-today: #e8f1fa;
+  --cal-grid: #e8eef4;
+  --cal-hour-text: #8aa8c7;
+}
+
+body.dark-mode {
+  --bg: #1a1f2e;
+  --surface: #242938;
+  --surface-alt: #1e2336;
+  --surface-2: rgba(255,255,255,0.04);
+  --text: #e0e4ec;
+  --text-dim: #8a92a8;
+  --primary: #6baadf;
+  --primary-dark: #5b9bd5;
+  --border: rgba(255,255,255,0.08);
+  --border-light: rgba(255,255,255,0.14);
+  --shadow: rgba(0,0,0,0.35);
+  --input-bg: #2a3040;
+  --input-border: rgba(255,255,255,0.12);
+  --nav-bg: #1e2332;
+  --nav-text: #8a92a8;
+  --nav-active-bg: #2e3448;
+  --cal-header: #2a3a5e;
+  --cal-today: #1f2d42;
+  --cal-grid: rgba(255,255,255,0.07);
+  --cal-hour-text: #6a80a0;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -12,13 +58,14 @@ html {
 
 body {
   font-family: 'Heebo', sans-serif;
-  background-color: #dae8f5;
-  color: #2a3a4a;
+  background-color: var(--bg);
+  color: var(--text);
   direction: rtl;
   min-height: 100vh;
   margin: 0;
   padding: 0;
   overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 #root {
@@ -65,7 +112,7 @@ body {
 .bg-circle-3 { animation: float3 9s ease-in-out infinite; }
 
 .tip-card {
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.3s ease;
 }
 .tip-card:hover {
   transform: translateY(-4px);
@@ -76,7 +123,6 @@ body {
   background-color: rgba(91, 155, 213, 0.05) !important;
 }
 
-/* Empty cell: show "+" hint on hover */
 .schedule-cell[data-empty="true"]:hover::after {
   content: '+';
   position: absolute;
@@ -88,13 +134,11 @@ body {
   pointer-events: none;
 }
 
-/* Dashed border hint on empty cell hover */
 .schedule-cell[data-empty="true"]:hover {
   outline: 1.5px dashed rgba(91, 155, 213, 0.25);
   outline-offset: -2px;
 }
 
-/* Event/task chips */
 .event-chip {
   transition: filter 0.12s;
 }
@@ -102,7 +146,6 @@ body {
   filter: brightness(0.92);
 }
 
-/* Calendar grid (responsive) */
 .calendar-grid {
   display: grid;
   grid-template-columns: 60px repeat(7, 1fr);
@@ -110,13 +153,10 @@ body {
 }
 
 @media (max-width: 640px) {
-  /* Show ~3 columns at a time on mobile */
   .calendar-grid {
     grid-template-columns: 54px repeat(7, calc((100vw - 54px - 32px) / 3));
     width: unset;
   }
-
-  /* Full-width bottom-sheet modal on mobile */
   .calendar-modal-backdrop {
     align-items: flex-end !important;
   }
@@ -164,12 +204,13 @@ body {
   left: 0;
   right: 0;
   z-index: 100;
-  background: #d5d5d5;
+  background: var(--nav-bg);
   border-top: none;
   border-radius: 20px 20px 0 0;
   box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.12);
   padding-bottom: env(safe-area-inset-bottom, 0px);
   max-height: 64px;
+  transition: background-color 0.3s ease;
 }
 
 .bottom-nav-inner {
@@ -211,19 +252,19 @@ body {
 .tab-label {
   font-size: 11px;
   font-weight: 600;
-  color: #777;
+  color: var(--nav-text);
   transition: color 0.18s;
   white-space: nowrap;
 }
 
 .tab-btn.active {
-  background: white;
+  background: var(--nav-active-bg);
   border-radius: 14px;
   box-shadow: 0 2px 10px rgba(91, 155, 213, 0.2);
 }
 
 .tab-btn.active .tab-label {
-  color: #5b9bd5;
+  color: var(--primary);
 }
 
 /* Stats grid */
@@ -292,5 +333,5 @@ body {
 }
 
 ::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: #dae8f5; }
+::-webkit-scrollbar-track { background: var(--bg); }
 ::-webkit-scrollbar-thumb { background: rgba(91, 155, 213, 0.3); border-radius: 3px; }

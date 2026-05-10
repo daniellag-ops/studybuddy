@@ -39,10 +39,11 @@ const fmtEstimate = (mins: number) => {
 const card: React.CSSProperties = {
   width: '100%',
   boxSizing: 'border-box',
-  background: 'white',
+  background: 'var(--surface)',
   borderRadius: '24px',
-  border: '1px solid rgba(91,155,213,0.12)',
-  boxShadow: '0 4px 18px rgba(91,155,213,0.1)',
+  border: '1px solid var(--border)',
+  boxShadow: '0 4px 18px var(--shadow)',
+  transition: 'background-color 0.3s ease',
 }
 
 const inputStyle: React.CSSProperties = {
@@ -50,9 +51,9 @@ const inputStyle: React.CSSProperties = {
   borderRadius: '14px',
   fontSize: '14px',
   outline: 'none',
-  border: '1.5px solid rgba(91,155,213,0.25)',
-  background: '#f0f6fd',
-  color: '#2a3a4a',
+  border: '1.5px solid var(--input-border)',
+  background: 'var(--input-bg)',
+  color: 'var(--text)',
   boxSizing: 'border-box',
 }
 
@@ -168,7 +169,7 @@ export default function Tasks() {
 
   return (
     <div className="fade-in" style={{ maxWidth: '1200px', margin: '0 auto', padding: '24px', width: '100%', boxSizing: 'border-box' }}>
-      <h1 style={{ fontSize: '28px', fontWeight: 800, color: '#2a3a4a', marginBottom: '24px' }}>
+      <h1 style={{ fontSize: '28px', fontWeight: 800, color: 'var(--text)', marginBottom: '24px' }}>
         ✅ משימות
       </h1>
 
@@ -201,7 +202,7 @@ export default function Tasks() {
               onChange={e => setDueDate(e.target.value)}
               title="תאריך (אופציונלי)"
               placeholder="תאריך (אופציונלי)"
-              style={{ ...inputStyle, cursor: 'pointer', color: dueDate ? '#2a3a4a' : '#6a8fa8' }}
+              style={{ ...inputStyle, cursor: 'pointer', color: dueDate ? '#2a3a4a' : 'var(--text-dim)' }}
             />
             {dueDate && (
               <input
@@ -214,7 +215,7 @@ export default function Tasks() {
             <select
               value={estimatedMinutes ?? ''}
               onChange={e => setEstimatedMinutes(e.target.value ? Number(e.target.value) : null)}
-              style={{ ...inputStyle, cursor: 'pointer', color: estimatedMinutes ? '#2a3a4a' : '#6a8fa8' }}
+              style={{ ...inputStyle, cursor: 'pointer', color: estimatedMinutes ? '#2a3a4a' : 'var(--text-dim)' }}
             >
               <option value="">⏱️ זמן משוער</option>
               {ESTIMATE_OPTIONS.map(opt => (
@@ -255,7 +256,7 @@ export default function Tasks() {
               cursor: 'pointer',
               fontSize: '13px',
               fontWeight: 600,
-              color: isRecurring ? '#5b9bd5' : '#6a8fa8',
+              color: isRecurring ? '#5b9bd5' : 'var(--text-dim)',
               display: 'inline-flex',
               alignItems: 'center',
               gap: '6px',
@@ -324,7 +325,7 @@ export default function Tasks() {
               )}
 
               {recurrenceType === 'weekly' && (
-                <p style={{ fontSize: '12px', color: '#6a8fa8', margin: 0 }}>
+                <p style={{ fontSize: '12px', color: 'var(--text-dim)', margin: 0 }}>
                   תחזור כל שבוע ביום {DAY_LABELS[new Date().getDay()]}
                 </p>
               )}
@@ -361,7 +362,7 @@ export default function Tasks() {
       {/* Task list */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '24px' }}>
         {filtered.length === 0 && (
-          <div style={{ ...card, padding: '32px', textAlign: 'center', color: '#6a8fa8', fontSize: '14px' }}>
+          <div style={{ ...card, padding: '32px', textAlign: 'center', color: 'var(--text-dim)', fontSize: '14px' }}>
             אין משימות להצגה
           </div>
         )}
@@ -389,7 +390,7 @@ export default function Tasks() {
                 style={{
                   flex: 1,
                   fontSize: '14px',
-                  color: '#2a3a4a',
+                  color: 'var(--text)',
                   textDecoration: task.done ? 'line-through' : 'none',
                   minWidth: 0,
                   display: 'flex',
@@ -405,7 +406,7 @@ export default function Tasks() {
                 </span>
               </span>
               {task.dueDate && (
-                <span style={{ fontSize: '12px', color: '#6a8fa8', flexShrink: 0 }}>
+                <span style={{ fontSize: '12px', color: 'var(--text-dim)', flexShrink: 0 }}>
                   📅 {task.dueDate} {task.dueTime}
                 </span>
               )}
@@ -457,7 +458,7 @@ export default function Tasks() {
                 gap: '8px',
                 flexWrap: 'wrap',
               }}>
-                <span style={{ fontSize: '13px', color: '#2a3a4a', flex: 1, minWidth: '160px' }}>
+                <span style={{ fontSize: '13px', color: 'var(--text)', flex: 1, minWidth: '160px' }}>
                   למחוק רק את המשימה הזו או את כל החזרות?
                 </span>
                 <div style={{ display: 'flex', gap: '6px', flexShrink: 0 }}>
@@ -498,7 +499,7 @@ export default function Tasks() {
             </button>
           ) : (
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: '10px', padding: '10px 16px', borderRadius: '16px', background: 'rgba(224,85,85,0.07)', border: '1px solid rgba(224,85,85,0.2)', flexWrap: 'wrap', justifyContent: 'center' }}>
-              <span style={{ fontSize: '13px', color: '#2a3a4a', fontWeight: 600 }}>בטוחים שרוצים למחוק את כל המשימות?</span>
+              <span style={{ fontSize: '13px', color: 'var(--text)', fontWeight: 600 }}>בטוחים שרוצים למחוק את כל המשימות?</span>
               <div style={{ display: 'flex', gap: '8px' }}>
                 <button
                   onClick={() => { setTasks([]); setClearConfirm(false) }}

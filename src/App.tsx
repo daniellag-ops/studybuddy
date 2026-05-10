@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import BottomNav from './components/Navbar'
 import BackgroundCircles from './components/BackgroundCircles'
+import ThemeToggle from './components/ThemeToggle'
 import Dashboard from './pages/Dashboard'
 import Tasks from './pages/Tasks'
 import Schedule from './pages/Schedule'
@@ -13,6 +14,7 @@ export default function App() {
     <BrowserRouter>
       <div style={{ position: 'relative', minHeight: '100vh', overflowX: 'hidden' }}>
         <BackgroundCircles />
+        <ThemeToggle />
         <div style={{ position: 'relative', zIndex: 10 }}>
           <main style={{ paddingBottom: '88px', width: '100%' }}>
             <Routes>

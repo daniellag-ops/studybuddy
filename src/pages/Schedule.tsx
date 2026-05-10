@@ -33,7 +33,7 @@ function getWeekDates(weekOffset: number) {
 interface ModalState { dayIdx: number; hour: string }
 
 const ROW_HEIGHT = 56
-const GRID_LINE = '#e8eef4'
+const GRID_LINE = 'var(--cal-grid)'
 
 const fmtDuration = (mins: number) => {
   if (mins < 60) return `${mins} דק׳`
@@ -41,8 +41,8 @@ const fmtDuration = (mins: number) => {
   if (mins === 120) return 'שעתיים'
   return `${mins / 60} שעות`
 }
-const HEADER_BG = '#5b9bd5'
-const TODAY_COL_BG = '#e8f1fa'
+const HEADER_BG = 'var(--cal-header)'
+const TODAY_COL_BG = 'var(--cal-today)'
 
 export default function Schedule() {
   const [schedule, setSchedule] = useLocalStorage<ScheduleData>('sb_schedule', {})
@@ -169,7 +169,7 @@ export default function Schedule() {
           padding: '10px 16px',
           marginBottom: '14px',
           fontSize: '13px',
-          color: '#3a6a9a',
+          color: 'var(--primary)',
           fontWeight: 500,
         }}>
           <span style={{ flex: 1 }}>💡 טיפ: לחצו על כל תא בלוח כדי להוסיף פעילות חדשה!</span>
@@ -182,7 +182,7 @@ export default function Schedule() {
 
       {/* Top bar */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
-        <h1 style={{ fontSize: '26px', fontWeight: 800, fontStyle: 'italic', color: '#2a3a4a' }}>
+        <h1 style={{ fontSize: '26px', fontWeight: 800, fontStyle: 'italic', color: 'var(--text)' }}>
           📅 לוח שבועי
         </h1>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -205,7 +205,7 @@ export default function Schedule() {
 
       {/* Grid card */}
       <div style={{
-        background: 'white',
+        background: 'var(--surface)',
         borderRadius: '16px',
         overflowX: 'auto',
         overflowY: 'visible',
@@ -259,11 +259,11 @@ export default function Schedule() {
               <div style={{
                 borderBottom: `0.5px solid ${GRID_LINE}`,
                 borderInlineEnd: `0.5px solid ${GRID_LINE}`,
-                fontSize: '12px', fontWeight: 600, color: '#8aa8c7',
+                fontSize: '12px', fontWeight: 600, color: 'var(--cal-hour-text)',
                 minHeight: `${ROW_HEIGHT}px`,
                 textAlign: 'center',
                 paddingTop: '6px',
-                position: 'sticky', right: 0, zIndex: 2, background: 'white',
+                position: 'sticky', right: 0, zIndex: 2, background: 'var(--surface)',
               }}>
                 {hour}
               </div>
@@ -274,7 +274,7 @@ export default function Schedule() {
                 const cellTasks = getCellTasks(date, hour)
                 const todayCol = isToday(date)
                 const isEmpty = events.length === 0 && cellTasks.length === 0
-                const rowBg = hourIdx % 2 === 0 ? 'white' : '#f7fafc'
+                const rowBg = hourIdx % 2 === 0 ? 'var(--surface)' : 'var(--surface-alt)'
                 const cellBg = todayCol ? TODAY_COL_BG : rowBg
                 const showTimeLine = todayCol && weekOffset === 0 && curH === parseInt(hour)
 
@@ -310,7 +310,7 @@ export default function Schedule() {
                           right: 2, top: -9,
                           fontSize: '9px', fontWeight: 700,
                           color: '#e05555',
-                          background: 'white',
+                          background: 'var(--surface)',
                           padding: '1px 3px',
                           borderRadius: '4px',
                           border: '1px solid rgba(224,85,85,0.2)',
@@ -342,8 +342,8 @@ export default function Schedule() {
                       >
                         <span style={{ flexShrink: 0, fontSize: '11px', lineHeight: '16px' }}>{ev.categoryEmoji}</span>
                         <div style={{ flex: 1, overflow: 'hidden', minWidth: 0 }}>
-                          <div style={{ fontSize: '12px', fontWeight: 500, color: '#2a3a4a', lineHeight: '16px', wordBreak: 'break-word' }}>{ev.activity}</div>
-                          <div style={{ fontSize: '11px', color: '#6a8a9a', lineHeight: '14px' }}>{ev.time}</div>
+                          <div style={{ fontSize: '12px', fontWeight: 500, color: 'var(--text)', lineHeight: '16px', wordBreak: 'break-word' }}>{ev.activity}</div>
+                          <div style={{ fontSize: '11px', color: 'var(--text-dim)', lineHeight: '14px' }}>{ev.time}</div>
                         </div>
                         <button
                           onClick={e => { e.stopPropagation(); deleteEvent(dayIdx, ev.uid) }}
@@ -381,13 +381,13 @@ export default function Schedule() {
                           </span>
                           <div style={{ flex: 1, overflow: 'hidden', minWidth: 0 }}>
                             <div style={{
-                              fontSize: '12px', fontWeight: 500, color: '#2a3a4a', lineHeight: '16px',
+                              fontSize: '12px', fontWeight: 500, color: 'var(--text)', lineHeight: '16px',
                               wordBreak: 'break-word',
                               textDecoration: task.done ? 'line-through' : 'none',
                             }}>
                               {task.text}{task.estimatedMinutes ? ` (${fmtDuration(task.estimatedMinutes)})` : ''}
                             </div>
-                            <div style={{ fontSize: '11px', color: '#6a8a9a', lineHeight: '14px' }}>{task.dueTime || '09:00'}</div>
+                            <div style={{ fontSize: '11px', color: 'var(--text-dim)', lineHeight: '14px' }}>{task.dueTime || '09:00'}</div>
                           </div>
                         </div>
                       )
@@ -415,21 +415,21 @@ export default function Schedule() {
             className="calendar-modal"
             onClick={e => e.stopPropagation()}
             style={{
-              background: 'white', borderRadius: '24px', padding: '28px',
+              background: 'var(--surface)', borderRadius: '24px', padding: '28px',
               maxWidth: '420px', width: '90%', boxSizing: 'border-box',
               boxShadow: '0 20px 60px rgba(91,155,213,0.25)',
             }}
           >
-            <h3 style={{ fontSize: '18px', fontWeight: 700, fontStyle: 'italic', color: '#2a3a4a', marginBottom: '4px' }}>
+            <h3 style={{ fontSize: '18px', fontWeight: 700, fontStyle: 'italic', color: 'var(--text)', marginBottom: '4px' }}>
               הוספת אירוע
             </h3>
-            <p style={{ fontSize: '13px', color: '#6a8a9a', marginBottom: '20px' }}>
+            <p style={{ fontSize: '13px', color: 'var(--text-dim)', marginBottom: '20px' }}>
               {DAY_NAMES[modal.dayIdx]} בשעה {modal.hour}
             </p>
             <select
               value={newCategory}
               onChange={e => setNewCategory(e.target.value)}
-              style={{ width: '100%', padding: '10px 16px', borderRadius: '14px', fontSize: '14px', outline: 'none', marginBottom: '12px', border: '1.5px solid rgba(91,155,213,0.25)', background: '#f0f6fd', color: '#2a3a4a', boxSizing: 'border-box' }}
+              style={{ width: '100%', padding: '10px 16px', borderRadius: '14px', fontSize: '14px', outline: 'none', marginBottom: '12px', border: '1.5px solid rgba(91,155,213,0.25)', background: 'var(--input-bg)', color: 'var(--text)', boxSizing: 'border-box' }}
             >
               {CATEGORIES.map(cat => <option key={cat.label} value={cat.label}>{cat.emoji} {cat.label}</option>)}
             </select>
@@ -440,7 +440,7 @@ export default function Schedule() {
               onKeyDown={e => e.key === 'Enter' && addEvent()}
               placeholder="מה תעשו?"
               autoFocus
-              style={{ width: '100%', padding: '10px 16px', borderRadius: '14px', fontSize: '14px', outline: 'none', marginBottom: '20px', border: '1.5px solid rgba(91,155,213,0.25)', background: '#f0f6fd', color: '#2a3a4a', boxSizing: 'border-box' }}
+              style={{ width: '100%', padding: '10px 16px', borderRadius: '14px', fontSize: '14px', outline: 'none', marginBottom: '20px', border: '1.5px solid rgba(91,155,213,0.25)', background: 'var(--input-bg)', color: 'var(--text)', boxSizing: 'border-box' }}
             />
             <div style={{ display: 'flex', gap: '10px' }}>
               <button

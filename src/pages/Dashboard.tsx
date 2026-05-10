@@ -18,10 +18,11 @@ const STRESS_LEVELS = [
 const card: React.CSSProperties = {
   width: '100%',
   boxSizing: 'border-box',
-  background: 'white',
+  background: 'var(--surface)',
   borderRadius: '24px',
-  border: '1px solid rgba(91,155,213,0.12)',
-  boxShadow: '0 4px 18px rgba(91,155,213,0.1)',
+  border: '1px solid var(--border)',
+  boxShadow: '0 4px 18px var(--shadow)',
+  transition: 'background-color 0.3s ease',
 }
 
 export default function Dashboard() {
@@ -95,7 +96,7 @@ export default function Dashboard() {
         </h1>
         <p style={{
           fontSize: '16px',
-          color: '#6a8a9a',
+          color: 'var(--text-dim)',
           fontWeight: 600,
           marginBottom: '24px',
         }}>
@@ -116,14 +117,14 @@ export default function Dashboard() {
         {stats.map((s, i) => (
           <div key={i} style={{ ...card, padding: '16px', textAlign: 'center' }}>
             <div style={{ fontSize: '24px', fontWeight: 700, color: s.color }}>{s.value}</div>
-            <div style={{ fontSize: '13px', marginTop: '4px', color: '#6a8a9a' }}>{s.label}</div>
+            <div style={{ fontSize: '13px', marginTop: '4px', color: 'var(--text-dim)' }}>{s.label}</div>
           </div>
         ))}
       </div>
 
       {/* Stress Meter */}
       <div style={{ ...card, padding: '20px', marginBottom: '16px' }}>
-        <h2 style={{ fontSize: '17px', fontWeight: 700, fontStyle: 'italic', color: '#2a3a4a', marginBottom: '16px' }}>מד לחץ</h2>
+        <h2 style={{ fontSize: '17px', fontWeight: 700, fontStyle: 'italic', color: 'var(--text)', marginBottom: '16px' }}>מד לחץ</h2>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '16px' }}>
           {STRESS_LEVELS.map(level => (
             <button
@@ -164,9 +165,9 @@ export default function Dashboard() {
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', width: '100%' }}>
         {/* Urgent tasks */}
         <div style={{ ...card, padding: '20px' }}>
-          <h2 style={{ fontSize: '17px', fontWeight: 700, fontStyle: 'italic', color: '#2a3a4a', marginBottom: '16px' }}>🔥 משימות דחופות</h2>
+          <h2 style={{ fontSize: '17px', fontWeight: 700, fontStyle: 'italic', color: 'var(--text)', marginBottom: '16px' }}>🔥 משימות דחופות</h2>
           {urgentOpen.length === 0 ? (
-            <p style={{ fontSize: '14px', color: '#6a8a9a' }}>אין משימות דחופות פתוחות ✓</p>
+            <p style={{ fontSize: '14px', color: 'var(--text-dim)' }}>אין משימות דחופות פתוחות ✓</p>
           ) : (
             <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '8px' }}>
               {urgentOpen.map(task => (
@@ -195,7 +196,7 @@ export default function Dashboard() {
 
         {/* Today's schedule */}
         <div style={{ ...card, padding: '20px' }}>
-          <h2 style={{ fontSize: '17px', fontWeight: 700, fontStyle: 'italic', color: '#2a3a4a', marginBottom: '16px' }}>📅 לוח היום</h2>
+          <h2 style={{ fontSize: '17px', fontWeight: 700, fontStyle: 'italic', color: 'var(--text)', marginBottom: '16px' }}>📅 לוח היום</h2>
           {totalEstimatedMins > 0 && (
             <div style={{
               display: 'flex', alignItems: 'center', gap: '8px',
@@ -212,7 +213,7 @@ export default function Dashboard() {
             </div>
           )}
           {todayItems.length === 0 ? (
-            <p style={{ fontSize: '14px', color: '#6a8a9a' }}>אין אירועים היום</p>
+            <p style={{ fontSize: '14px', color: 'var(--text-dim)' }}>אין אירועים היום</p>
           ) : (
             <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '8px' }}>
               {todayItems.map((item, i) => item.kind === 'event' ? (
@@ -229,7 +230,7 @@ export default function Dashboard() {
                     borderRight: `3px solid ${item.ev.categoryColor}`,
                   }}
                 >
-                  <span style={{ fontWeight: 600, fontSize: '12px', color: '#6a8a9a', flexShrink: 0 }}>{item.time}</span>
+                  <span style={{ fontWeight: 600, fontSize: '12px', color: 'var(--text-dim)', flexShrink: 0 }}>{item.time}</span>
                   <span>{item.ev.categoryEmoji} {item.ev.activity}</span>
                 </li>
               ) : (
@@ -248,7 +249,7 @@ export default function Dashboard() {
                     textDecoration: item.task.done ? 'line-through' : 'none',
                   }}
                 >
-                  <span style={{ fontWeight: 600, fontSize: '12px', color: '#6a8a9a', flexShrink: 0 }}>{item.time}</span>
+                  <span style={{ fontWeight: 600, fontSize: '12px', color: 'var(--text-dim)', flexShrink: 0 }}>{item.time}</span>
                   <span>✅ {item.task.text}</span>
                 </li>
               ))}

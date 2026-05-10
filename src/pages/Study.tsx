@@ -5,12 +5,13 @@ const API_KEY = import.meta.env.VITE_ANTHROPIC_API_KEY as string
 const SUBJECTS = ['מתמטיקה', 'אנגלית', 'עברית', 'מדעים', 'היסטוריה', 'תנ״ך', 'ספרות', 'אחר']
 
 const card: React.CSSProperties = {
-  background: 'white',
+  background: 'var(--surface)',
   borderRadius: '24px',
-  border: '1px solid rgba(91,155,213,0.12)',
-  boxShadow: '0 4px 18px rgba(91,155,213,0.1)',
+  border: '1px solid var(--border)',
+  boxShadow: '0 4px 18px var(--shadow)',
   boxSizing: 'border-box',
   width: '100%',
+  transition: 'background-color 0.3s ease',
 }
 
 type Step = 1 | 2 | 3 | 4
@@ -226,13 +227,13 @@ export default function Study() {
       {step === 1 && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           <div style={{ ...card, padding: '24px' }}>
-            <label style={{ fontSize: '14px', fontWeight: 700, color: '#2a3a4a', display: 'block', marginBottom: '8px' }}>
+            <label style={{ fontSize: '14px', fontWeight: 700, color: 'var(--text)', display: 'block', marginBottom: '8px' }}>
               נושא
             </label>
             <select
               value={subject}
               onChange={e => setSubject(e.target.value)}
-              style={{ width: '100%', padding: '10px 14px', borderRadius: '12px', border: '1.5px solid rgba(91,155,213,0.25)', fontSize: '15px', background: '#f7fbff', color: '#2a3a4a', outline: 'none', fontFamily: 'inherit' }}
+              style={{ width: '100%', padding: '10px 14px', borderRadius: '12px', border: '1.5px solid rgba(91,155,213,0.25)', fontSize: '15px', background: 'var(--input-bg)', color: 'var(--text)', outline: 'none', fontFamily: 'inherit' }}
             >
               {SUBJECTS.map(s => <option key={s} value={s}>{s}</option>)}
             </select>
@@ -263,7 +264,7 @@ export default function Study() {
 
           {/* Paste text */}
           <div style={{ ...card, padding: '20px' }}>
-            <label style={{ fontSize: '14px', fontWeight: 700, color: '#2a3a4a', display: 'block', marginBottom: '8px' }}>
+            <label style={{ fontSize: '14px', fontWeight: 700, color: 'var(--text)', display: 'block', marginBottom: '8px' }}>
               הדביקו טקסט ישירות
             </label>
             <textarea
@@ -271,7 +272,7 @@ export default function Study() {
               onChange={e => setPastedText(e.target.value)}
               placeholder="הדביקו כאן את חומר הלימוד שלכם..."
               rows={6}
-              style={{ width: '100%', padding: '12px', borderRadius: '12px', border: '1.5px solid rgba(91,155,213,0.25)', fontSize: '14px', fontFamily: 'inherit', resize: 'vertical', outline: 'none', background: '#f7fbff', color: '#2a3a4a', direction: 'rtl', boxSizing: 'border-box' }}
+              style={{ width: '100%', padding: '12px', borderRadius: '12px', border: '1.5px solid rgba(91,155,213,0.25)', fontSize: '14px', fontFamily: 'inherit', resize: 'vertical', outline: 'none', background: 'var(--input-bg)', color: 'var(--text)', direction: 'rtl', boxSizing: 'border-box' }}
             />
           </div>
 
@@ -300,7 +301,7 @@ export default function Study() {
                 {chatMessages.filter(m => m.role === 'assistant').map((msg, i) => (
                   <div key={i} style={{ ...card, padding: '20px', background: 'rgba(91,155,213,0.05)', borderRight: '4px solid #5b9bd5' }}>
                     <div style={{ fontSize: '13px', fontWeight: 700, color: '#5b9bd5', marginBottom: '8px' }}>🤖 הבאדי החכם</div>
-                    <p style={{ fontSize: '15px', lineHeight: 1.7, color: '#2a3a4a', whiteSpace: 'pre-wrap' }}>{msg.content}</p>
+                    <p style={{ fontSize: '15px', lineHeight: 1.7, color: 'var(--text)', whiteSpace: 'pre-wrap' }}>{msg.content}</p>
                   </div>
                 ))}
               </div>
@@ -313,7 +314,7 @@ export default function Study() {
                     onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage() } }}
                     placeholder="כתבו את התשובה שלכם..."
                     rows={2}
-                    style={{ flex: 1, padding: '10px 12px', borderRadius: '12px', border: '1.5px solid rgba(91,155,213,0.25)', fontSize: '14px', fontFamily: 'inherit', resize: 'none', outline: 'none', background: '#f7fbff', color: '#2a3a4a', direction: 'rtl' }}
+                    style={{ flex: 1, padding: '10px 12px', borderRadius: '12px', border: '1.5px solid rgba(91,155,213,0.25)', fontSize: '14px', fontFamily: 'inherit', resize: 'none', outline: 'none', background: 'var(--input-bg)', color: 'var(--text)', direction: 'rtl' }}
                   />
                   <button
                     onClick={sendMessage}
@@ -359,13 +360,13 @@ export default function Study() {
                   {doneSteps[i] ? '✓' : ''}
                 </button>
                 <div style={{ flex: 1 }}>
-                  <p style={{ fontSize: '15px', fontWeight: 800, color: '#2a3a4a', marginBottom: '6px' }}>
+                  <p style={{ fontSize: '15px', fontWeight: 800, color: 'var(--text)', marginBottom: '6px' }}>
                     שלב {i + 1}: {s.title}
                   </p>
                   <p style={{ fontSize: '14px', lineHeight: 1.65, color: '#4a5a6a', marginBottom: '10px' }}>{s.explanation}</p>
                   <div style={{ background: 'rgba(91,155,213,0.07)', borderRadius: '12px', padding: '12px 14px' }}>
                     <p style={{ fontSize: '12px', fontWeight: 700, color: '#5b9bd5', marginBottom: '4px' }}>✏️ תרגיל</p>
-                    <p style={{ fontSize: '13px', color: '#2a3a4a', lineHeight: 1.6 }}>{s.exercise}</p>
+                    <p style={{ fontSize: '13px', color: 'var(--text)', lineHeight: 1.6 }}>{s.exercise}</p>
                   </div>
                 </div>
               </div>
@@ -403,7 +404,7 @@ export default function Study() {
                   <p style={{ fontSize: '36px', fontWeight: 900, color: pct >= 80 ? '#3aaa6d' : pct >= 60 ? '#d4960a' : '#e05555', marginBottom: '8px' }}>
                     {score}/{quizQuestions.length}
                   </p>
-                  <p style={{ fontSize: '16px', fontWeight: 700, color: '#2a3a4a' }}>
+                  <p style={{ fontSize: '16px', fontWeight: 700, color: 'var(--text)' }}>
                     {pct >= 80 ? 'מדהים! שלטתם בחומר! 🌟' : pct >= 60 ? 'כל הכבוד! כמעט שם. חזרו על מה שפספסתם 💪' : 'לא נורא! חזרו על תוכנית הלמידה ונסו שוב. אתם יכולים! 🤗'}
                   </p>
                 </div>
@@ -415,7 +416,7 @@ export default function Study() {
                 const isCorrect = answered === correct
                 return (
                   <div key={qi} style={{ ...card, padding: '20px' }}>
-                    <p style={{ fontSize: '15px', fontWeight: 700, color: '#2a3a4a', marginBottom: '14px', lineHeight: 1.5 }}>
+                    <p style={{ fontSize: '15px', fontWeight: 700, color: 'var(--text)', marginBottom: '14px', lineHeight: 1.5 }}>
                       {qi + 1}. {q.question}
                     </p>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
