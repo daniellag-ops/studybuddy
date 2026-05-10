@@ -51,14 +51,58 @@ export default function Schedule() {
   const getCellEvents = (dayIdx: number, hour: string): ScheduleEvent[] =>
     (schedule[dayIdx] || []).filter(e => e.time === hour)
 
-  const getCellTasks = (date: Date, hour: string): Task[] =>
-    tasks.filter(t => {
-      if (!t.dueDate || t.dueDate !== dateStr(date)) return false
-      return (t.dueTime || '09:00').slice(0, 2) + ':00' === hour
+  const getCellTasks = (date: Date, hour: string): Task[] => {
+    const ds = dateStr(date)
+    const dayOfWeek = date.getDay()
+    // Parent IDs already covered by a real instance on this date
+    const coveredParentIds = new Set(
+      tasks
+        .filter(t => t.recurringParentId && t.dueDate === ds)
+        .map(t => t.recurringParentId as string)
+    )
+    return tasks.filter(t => {
+      const tHour = (t.dueTime || '09:00').slice(0, 2) + ':00'
+      if (tHour !== hour) return false
+      // Regular one-time task with exact due date
+      if (t.dueDate && !t.isRecurring && !t.recurringParentId) return t.dueDate === ds
+      // Real recurring instance for this date
+      if (t.recurringParentId) return t.dueDate === ds
+      // Recurring parent — show virtually on matching days (unless instance already covers it)
+      if (t.isRecurring && !coveredParentIds.has(t.id)) {
+        if (t.recurrenceType === 'daily') return true
+        if (t.recurrenceType === 'weekly' || t.recurrenceType === 'custom') {
+          return (t.recurrenceDays ?? []).includes(dayOfWeek)
+        }
+      }
+      return false
     })
+  }
 
-  const toggleTask = (id: string) =>
-    setTasks(prev => prev.map(t => t.id === id ? { ...t, done: !t.done } : t))
+  const toggleTask = (id: string, date: Date) => {
+    const task = tasks.find(t => t.id === id)
+    if (!task) return
+    if (task.isRecurring) {
+      // Create or toggle a per-date instance instead of mutating the parent template
+      const ds = dateStr(date)
+      const instance = tasks.find(t => t.recurringParentId === id && t.dueDate === ds)
+      if (instance) {
+        setTasks(prev => prev.map(t => t.id === instance.id ? { ...t, done: !t.done } : t))
+      } else {
+        setTasks(prev => [...prev, {
+          id: crypto.randomUUID(),
+          text: task.text,
+          priority: task.priority,
+          done: true,
+          createdAt: new Date().toISOString(),
+          dueDate: ds,
+          dueTime: task.dueTime,
+          recurringParentId: id,
+        }])
+      }
+    } else {
+      setTasks(prev => prev.map(t => t.id === id ? { ...t, done: !t.done } : t))
+    }
+  }
 
   const addEvent = () => {
     if (!modal || !newActivity.trim()) return
@@ -241,9 +285,9 @@ export default function Schedule() {
                           cursor: 'pointer',
                           textDecoration: task.done ? 'line-through' : 'none',
                         }}
-                        onClick={e => { e.stopPropagation(); toggleTask(task.id) }}
+                        onClick={e => { e.stopPropagation(); toggleTask(task.id, date) }}
                       >
-                        <span>✅</span>
+                        <span>{task.isRecurring || task.recurringParentId ? '🔄' : '✅'}</span>
                         <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{task.text}</span>
                       </div>
                     ))}

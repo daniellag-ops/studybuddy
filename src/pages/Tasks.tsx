@@ -79,8 +79,33 @@ export default function Tasks() {
     setRecurrenceType('weekly')
   }
 
-  const toggleTask = (id: string) =>
-    setTasks(prev => prev.map(t => t.id === id ? { ...t, done: !t.done } : t))
+  const fmt = (d: Date) =>
+    `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+
+  const toggleTask = (id: string) => {
+    const task = tasks.find(t => t.id === id)
+    if (!task) return
+    if (task.isRecurring) {
+      const todayStr = fmt(new Date())
+      const instance = tasks.find(t => t.recurringParentId === id && t.dueDate === todayStr)
+      if (instance) {
+        setTasks(prev => prev.map(t => t.id === instance.id ? { ...t, done: !t.done } : t))
+      } else {
+        setTasks(prev => [{
+          id: crypto.randomUUID(),
+          text: task.text,
+          priority: task.priority,
+          done: true,
+          createdAt: new Date().toISOString(),
+          dueDate: todayStr,
+          dueTime: task.dueTime,
+          recurringParentId: id,
+        }, ...prev])
+      }
+    } else {
+      setTasks(prev => prev.map(t => t.id === id ? { ...t, done: !t.done } : t))
+    }
+  }
 
   const handleDeleteClick = (task: Task) => {
     if (task.isRecurring || task.recurringParentId) {
