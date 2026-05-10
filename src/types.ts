@@ -8,6 +8,10 @@ export interface Task {
   createdAt: string
   dueDate?: string
   dueTime?: string
+  isRecurring?: boolean
+  recurrenceType?: 'daily' | 'weekly' | 'custom'
+  recurrenceDays?: number[]
+  recurringParentId?: string
 }
 
 export interface ScheduleEvent {
