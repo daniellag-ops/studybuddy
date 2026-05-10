@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import type { ScheduleData, ScheduleEvent, Task, Priority } from '../types'
 
@@ -32,6 +32,11 @@ function getWeekDates(weekOffset: number) {
 
 interface ModalState { dayIdx: number; hour: string }
 
+const ROW_HEIGHT = 56
+const GRID_LINE = '#e8eef4'
+const HEADER_BG = '#5b9bd5'
+const TODAY_COL_BG = '#e8f1fa'
+
 export default function Schedule() {
   const [schedule, setSchedule] = useLocalStorage<ScheduleData>('sb_schedule', {})
   const [tasks, setTasks] = useLocalStorage<Task[]>('sb_tasks', [])
@@ -39,6 +44,13 @@ export default function Schedule() {
   const [modal, setModal] = useState<ModalState | null>(null)
   const [newActivity, setNewActivity] = useState('')
   const [newCategory, setNewCategory] = useState(CATEGORIES[0].label)
+  const [currentTime, setCurrentTime] = useState(new Date())
+  const [showHint, setShowHint] = useLocalStorage<boolean>('sb_calendar_hint', true)
+
+  useEffect(() => {
+    const id = setInterval(() => setCurrentTime(new Date()), 60000)
+    return () => clearInterval(id)
+  }, [])
 
   const today = new Date()
   const weekDates = getWeekDates(weekOffset)
@@ -54,7 +66,6 @@ export default function Schedule() {
   const getCellTasks = (date: Date, hour: string): Task[] => {
     const ds = dateStr(date)
     const dayOfWeek = date.getDay()
-    // Parent IDs already covered by a real instance on this date
     const coveredParentIds = new Set(
       tasks
         .filter(t => t.recurringParentId && t.dueDate === ds)
@@ -63,11 +74,8 @@ export default function Schedule() {
     return tasks.filter(t => {
       const tHour = (t.dueTime || '09:00').slice(0, 2) + ':00'
       if (tHour !== hour) return false
-      // Regular one-time task with exact due date
       if (t.dueDate && !t.isRecurring && !t.recurringParentId) return t.dueDate === ds
-      // Real recurring instance for this date
       if (t.recurringParentId) return t.dueDate === ds
-      // Recurring parent — show virtually on matching days (unless instance already covers it)
       if (t.isRecurring && !coveredParentIds.has(t.id)) {
         if (t.recurrenceType === 'daily') return true
         if (t.recurrenceType === 'weekly' || t.recurrenceType === 'custom') {
@@ -82,7 +90,6 @@ export default function Schedule() {
     const task = tasks.find(t => t.id === id)
     if (!task) return
     if (task.isRecurring) {
-      // Create or toggle a per-date instance instead of mutating the parent template
       const ds = dateStr(date)
       const instance = tasks.find(t => t.recurringParentId === id && t.dueDate === ds)
       if (instance) {
@@ -137,12 +144,33 @@ export default function Schedule() {
     border: 'none', cursor: 'pointer',
   }
 
-  const GRID_LINE = '#c5d9ed'
-  const HEADER_BG = '#5b9bd5'
-  const TODAY_COL_BG = 'rgba(91,155,213,0.08)'
+  const curH = currentTime.getHours()
+  const curM = currentTime.getMinutes()
+  const timeLabel = `${String(curH).padStart(2, '0')}:${String(curM).padStart(2, '0')}`
 
   return (
     <div className="fade-in" style={{ maxWidth: '1200px', margin: '0 auto', padding: '24px', width: '100%', boxSizing: 'border-box' }}>
+
+      {/* Hint banner */}
+      {showHint && (
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: '10px',
+          background: 'rgba(91,155,213,0.09)',
+          border: '1px solid rgba(91,155,213,0.18)',
+          borderRadius: '14px',
+          padding: '10px 16px',
+          marginBottom: '14px',
+          fontSize: '13px',
+          color: '#3a6a9a',
+          fontWeight: 500,
+        }}>
+          <span style={{ flex: 1 }}>💡 טיפ: לחצו על כל תא בלוח כדי להוסיף פעילות חדשה!</span>
+          <button
+            onClick={() => setShowHint(false)}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#5b9bd5', fontSize: '16px', lineHeight: 1, padding: '2px 6px', flexShrink: 0, opacity: 0.7 }}
+          >✕</button>
+        </div>
+      )}
 
       {/* Top bar */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
@@ -169,30 +197,37 @@ export default function Schedule() {
 
       {/* Grid card */}
       <div style={{
-        background: 'white', borderRadius: '24px',
-        overflowX: 'auto', overflowY: 'visible',
-        border: `1.5px solid ${GRID_LINE}`,
-        boxShadow: '0 4px 20px rgba(91,155,213,0.1)',
+        background: 'white',
+        borderRadius: '16px',
+        overflowX: 'auto',
+        overflowY: 'visible',
+        border: `1px solid ${GRID_LINE}`,
+        boxShadow: '0 2px 16px rgba(91,155,213,0.1)',
         WebkitOverflowScrolling: 'touch',
       }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '64px repeat(7, 80px)', minWidth: '624px' }}>
+        <div className="calendar-grid">
 
           {/* Corner cell */}
-          <div style={{ borderBottom: `1px solid ${GRID_LINE}`, borderInlineEnd: `1px solid ${GRID_LINE}`, background: HEADER_BG, position: 'sticky', right: 0, zIndex: 3 }} />
+          <div style={{
+            borderBottom: `0.5px solid ${GRID_LINE}`,
+            borderInlineEnd: `0.5px solid ${GRID_LINE}`,
+            background: HEADER_BG,
+            position: 'sticky', right: 0, zIndex: 3,
+          }} />
 
           {/* Day header cells */}
           {weekDates.map((date, i) => (
             <div
               key={i}
               style={{
-                borderBottom: `1px solid ${GRID_LINE}`,
-                borderInlineEnd: `1px solid ${GRID_LINE}`,
+                borderBottom: `0.5px solid ${GRID_LINE}`,
+                borderInlineEnd: `0.5px solid ${GRID_LINE}`,
                 background: HEADER_BG,
                 padding: '8px 4px',
                 textAlign: 'center',
               }}
             >
-              <div style={{ fontSize: '11px', fontWeight: 600, color: 'rgba(255,255,255,0.8)', marginBottom: '2px' }}>
+              <div style={{ fontSize: '10px', fontWeight: 600, color: 'rgba(255,255,255,0.75)', marginBottom: '3px', letterSpacing: '0.02em' }}>
                 {DAY_NAMES[i]}
               </div>
               <div style={{
@@ -210,14 +245,16 @@ export default function Schedule() {
           ))}
 
           {/* Hour rows */}
-          {HOURS.map(hour => (
+          {HOURS.map((hour, hourIdx) => (
             <React.Fragment key={hour}>
               {/* Hour label */}
               <div style={{
-                borderBottom: `1px solid ${GRID_LINE}`,
-                borderInlineEnd: `1px solid ${GRID_LINE}`,
-                fontSize: '11px', fontWeight: 600, color: '#6a8a9a',
-                minHeight: '60px', textAlign: 'center', paddingTop: '7px',
+                borderBottom: `0.5px solid ${GRID_LINE}`,
+                borderInlineEnd: `0.5px solid ${GRID_LINE}`,
+                fontSize: '12px', fontWeight: 600, color: '#8aa8c7',
+                minHeight: `${ROW_HEIGHT}px`,
+                textAlign: 'center',
+                paddingTop: '6px',
                 position: 'sticky', right: 0, zIndex: 2, background: 'white',
               }}>
                 {hour}
@@ -228,67 +265,115 @@ export default function Schedule() {
                 const events = getCellEvents(dayIdx, hour)
                 const cellTasks = getCellTasks(date, hour)
                 const todayCol = isToday(date)
+                const isEmpty = events.length === 0 && cellTasks.length === 0
+                const rowBg = hourIdx % 2 === 0 ? 'white' : '#f7fafc'
+                const cellBg = todayCol ? TODAY_COL_BG : rowBg
+                const showTimeLine = todayCol && weekOffset === 0 && curH === parseInt(hour)
+
                 return (
                   <div
                     key={dayIdx}
                     className="schedule-cell"
+                    data-empty={isEmpty ? 'true' : 'false'}
                     style={{
-                      borderBottom: `1px solid ${GRID_LINE}`,
-                      borderInlineEnd: `1px solid ${GRID_LINE}`,
-                      minHeight: '60px',
+                      borderBottom: `0.5px solid ${GRID_LINE}`,
+                      borderInlineEnd: `0.5px solid ${GRID_LINE}`,
+                      minHeight: `${ROW_HEIGHT}px`,
                       padding: '3px',
-                      background: todayCol ? TODAY_COL_BG : 'white',
+                      background: cellBg,
                       cursor: 'pointer',
+                      position: 'relative',
                     }}
                     onClick={() => setModal({ dayIdx, hour })}
                   >
+                    {/* Current time indicator */}
+                    {showTimeLine && (
+                      <div style={{
+                        position: 'absolute',
+                        top: `${(curM / 60) * ROW_HEIGHT}px`,
+                        left: 0, right: 0,
+                        height: '2px',
+                        background: '#e05555',
+                        zIndex: 3,
+                        pointerEvents: 'none',
+                      }}>
+                        <div style={{
+                          position: 'absolute',
+                          right: 2, top: -9,
+                          fontSize: '9px', fontWeight: 700,
+                          color: '#e05555',
+                          background: 'white',
+                          padding: '1px 3px',
+                          borderRadius: '4px',
+                          border: '1px solid rgba(224,85,85,0.2)',
+                          lineHeight: 1.4,
+                          whiteSpace: 'nowrap',
+                        }}>
+                          {timeLabel}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Schedule event chips */}
                     {events.map(ev => (
                       <div
                         key={ev.uid}
+                        className="event-chip"
                         style={{
-                          background: `${ev.categoryColor}1a`,
-                          borderRight: `3px solid ${ev.categoryColor}`,
+                          background: `${ev.categoryColor}18`,
+                          borderRight: `4px solid ${ev.categoryColor}`,
                           borderRadius: '8px',
-                          padding: '2px 6px',
+                          padding: '3px 5px',
                           marginBottom: '2px',
                           display: 'flex',
-                          alignItems: 'center',
-                          gap: '4px',
-                          fontSize: '12px',
-                          color: '#2a3a4a',
+                          alignItems: 'flex-start',
+                          gap: '3px',
+                          cursor: 'default',
                         }}
                         onClick={e => e.stopPropagation()}
                       >
-                        <span>{ev.categoryEmoji}</span>
-                        <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{ev.activity}</span>
+                        <span style={{ flexShrink: 0, fontSize: '11px', lineHeight: '16px' }}>{ev.categoryEmoji}</span>
+                        <div style={{ flex: 1, overflow: 'hidden', minWidth: 0 }}>
+                          <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: '12px', fontWeight: 500, color: '#2a3a4a', lineHeight: '16px' }}>{ev.activity}</div>
+                          <div style={{ fontSize: '10px', color: '#6a8a9a', lineHeight: '13px' }}>{ev.time}</div>
+                        </div>
                         <button
                           onClick={e => { e.stopPropagation(); deleteEvent(dayIdx, ev.uid) }}
-                          style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#e05555', fontSize: '11px', opacity: 0.6, flexShrink: 0, padding: 0 }}
+                          style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#e05555', fontSize: '10px', opacity: 0.45, flexShrink: 0, padding: 0, lineHeight: 1, marginTop: '2px' }}
                         >✕</button>
                       </div>
                     ))}
+
+                    {/* Task chips */}
                     {cellTasks.map(task => (
                       <div
                         key={task.id}
+                        className="event-chip"
                         style={{
-                          background: 'rgba(91,155,213,0.1)',
-                          borderRight: `3px solid ${PRIORITY_COLORS[task.priority]}`,
+                          background: `${PRIORITY_COLORS[task.priority]}14`,
+                          borderRight: `4px solid ${PRIORITY_COLORS[task.priority]}`,
                           borderRadius: '8px',
-                          padding: '2px 6px',
+                          padding: '3px 5px',
                           marginBottom: '2px',
                           display: 'flex',
-                          alignItems: 'center',
-                          gap: '4px',
-                          fontSize: '12px',
-                          color: '#2a3a4a',
-                          opacity: task.done ? 0.5 : 1,
+                          alignItems: 'flex-start',
+                          gap: '3px',
+                          opacity: task.done ? 0.45 : 1,
                           cursor: 'pointer',
-                          textDecoration: task.done ? 'line-through' : 'none',
                         }}
                         onClick={e => { e.stopPropagation(); toggleTask(task.id, date) }}
                       >
-                        <span>{task.isRecurring || task.recurringParentId ? '🔄' : '✅'}</span>
-                        <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{task.text}</span>
+                        <span style={{ flexShrink: 0, fontSize: '11px', lineHeight: '16px' }}>
+                          {task.isRecurring || task.recurringParentId ? '🔄' : '✅'}
+                        </span>
+                        <div style={{ flex: 1, overflow: 'hidden', minWidth: 0 }}>
+                          <div style={{
+                            overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                            fontSize: '12px', fontWeight: 500, color: '#2a3a4a', lineHeight: '16px',
+                            textDecoration: task.done ? 'line-through' : 'none',
+                          }}>{task.text}</div>
+                          <div style={{ fontSize: '10px', color: '#6a8a9a', lineHeight: '13px' }}>{task.dueTime || '09:00'}</div>
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -299,9 +384,10 @@ export default function Schedule() {
         </div>
       </div>
 
-      {/* Modal */}
+      {/* Add event modal */}
       {modal && (
         <div
+          className="calendar-modal-backdrop"
           onClick={() => setModal(null)}
           style={{
             position: 'fixed', inset: 0, zIndex: 999,
@@ -310,6 +396,7 @@ export default function Schedule() {
           }}
         >
           <div
+            className="calendar-modal"
             onClick={e => e.stopPropagation()}
             style={{
               background: 'white', borderRadius: '24px', padding: '28px',
