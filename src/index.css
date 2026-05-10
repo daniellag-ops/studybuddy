@@ -95,15 +95,15 @@ body {
 /* Calendar grid (responsive) */
 .calendar-grid {
   display: grid;
-  grid-template-columns: 54px repeat(7, 80px);
-  min-width: 594px;
+  grid-template-columns: 60px repeat(7, 1fr);
+  width: 100%;
 }
 
 @media (max-width: 640px) {
   /* Show ~3 columns at a time on mobile */
   .calendar-grid {
     grid-template-columns: 54px repeat(7, calc((100vw - 54px - 32px) / 3));
-    min-width: unset;
+    width: unset;
   }
 
   /* Full-width bottom-sheet modal on mobile */

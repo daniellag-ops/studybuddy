@@ -334,8 +334,8 @@ export default function Schedule() {
                       >
                         <span style={{ flexShrink: 0, fontSize: '11px', lineHeight: '16px' }}>{ev.categoryEmoji}</span>
                         <div style={{ flex: 1, overflow: 'hidden', minWidth: 0 }}>
-                          <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: '12px', fontWeight: 500, color: '#2a3a4a', lineHeight: '16px' }}>{ev.activity}</div>
-                          <div style={{ fontSize: '10px', color: '#6a8a9a', lineHeight: '13px' }}>{ev.time}</div>
+                          <div style={{ fontSize: '12px', fontWeight: 500, color: '#2a3a4a', lineHeight: '16px', wordBreak: 'break-word' }}>{ev.activity}</div>
+                          <div style={{ fontSize: '11px', color: '#6a8a9a', lineHeight: '14px' }}>{ev.time}</div>
                         </div>
                         <button
                           onClick={e => { e.stopPropagation(); deleteEvent(dayIdx, ev.uid) }}
@@ -368,11 +368,11 @@ export default function Schedule() {
                         </span>
                         <div style={{ flex: 1, overflow: 'hidden', minWidth: 0 }}>
                           <div style={{
-                            overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
                             fontSize: '12px', fontWeight: 500, color: '#2a3a4a', lineHeight: '16px',
+                            wordBreak: 'break-word',
                             textDecoration: task.done ? 'line-through' : 'none',
                           }}>{task.text}</div>
-                          <div style={{ fontSize: '10px', color: '#6a8a9a', lineHeight: '13px' }}>{task.dueTime || '09:00'}</div>
+                          <div style={{ fontSize: '11px', color: '#6a8a9a', lineHeight: '14px' }}>{task.dueTime || '09:00'}</div>
                         </div>
                       </div>
                     ))}
