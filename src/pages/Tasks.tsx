@@ -68,6 +68,7 @@ export default function Tasks() {
   const [recurrenceDays, setRecurrenceDays] = useState<number[]>([])
   const [estimatedMinutes, setEstimatedMinutes] = useState<number | null>(null)
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null)
+  const [clearConfirm, setClearConfirm] = useState(false)
 
   useRecurringTasks(tasks, setTasks)
 
@@ -358,7 +359,7 @@ export default function Tasks() {
       </div>
 
       {/* Task list */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '24px' }}>
         {filtered.length === 0 && (
           <div style={{ ...card, padding: '32px', textAlign: 'center', color: '#6a8fa8', fontSize: '14px' }}>
             אין משימות להצגה
@@ -484,6 +485,38 @@ export default function Tasks() {
           </div>
         ))}
       </div>
+
+      {/* Clear all button */}
+      {tasks.length > 0 && (
+        <div style={{ textAlign: 'center', paddingBottom: '8px' }}>
+          {!clearConfirm ? (
+            <button
+              onClick={() => setClearConfirm(true)}
+              style={{ padding: '8px 20px', borderRadius: '14px', fontSize: '13px', fontWeight: 600, cursor: 'pointer', border: '1.5px solid rgba(224,85,85,0.25)', background: 'rgba(224,85,85,0.06)', color: '#e05555' }}
+            >
+              🗑️ מחק הכל
+            </button>
+          ) : (
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '10px', padding: '10px 16px', borderRadius: '16px', background: 'rgba(224,85,85,0.07)', border: '1px solid rgba(224,85,85,0.2)', flexWrap: 'wrap', justifyContent: 'center' }}>
+              <span style={{ fontSize: '13px', color: '#2a3a4a', fontWeight: 600 }}>בטוחים שרוצים למחוק את כל המשימות?</span>
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <button
+                  onClick={() => { setTasks([]); setClearConfirm(false) }}
+                  style={{ padding: '6px 16px', borderRadius: '10px', fontSize: '13px', fontWeight: 700, border: 'none', cursor: 'pointer', background: '#e05555', color: 'white' }}
+                >
+                  כן, מחק
+                </button>
+                <button
+                  onClick={() => setClearConfirm(false)}
+                  style={{ padding: '6px 16px', borderRadius: '10px', fontSize: '13px', fontWeight: 700, border: 'none', cursor: 'pointer', background: 'rgba(91,155,213,0.12)', color: '#5b9bd5' }}
+                >
+                  ביטול
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   )
 }
