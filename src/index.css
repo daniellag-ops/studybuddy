@@ -84,6 +84,20 @@ body {
   }
 }
 
+/* Logo */
+.bottom-nav-logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 6px 0 2px;
+}
+
+@media (max-width: 768px) {
+  .logo-hero {
+    max-width: 200px !important;
+  }
+}
+
 /* Bottom tab bar */
 .bottom-nav {
   position: fixed;

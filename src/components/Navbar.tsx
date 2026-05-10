@@ -1,5 +1,7 @@
 import { NavLink } from 'react-router-dom'
 
+const LOGO = <img src="/logo.png" alt="StudyBuddy" style={{ height: 32, display: 'block' }} />
+
 const TABS = [
   { to: '/', label: 'ראשי', icon: '🏠' },
   { to: '/tasks', label: 'משימות', icon: '✅' },
@@ -11,6 +13,7 @@ const TABS = [
 export default function BottomNav() {
   return (
     <nav className="bottom-nav">
+      <div className="bottom-nav-logo">{LOGO}</div>
       <div className="bottom-nav-inner">
         {TABS.map(({ to, label, icon }) => (
           <NavLink

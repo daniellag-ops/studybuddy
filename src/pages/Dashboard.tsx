@@ -1,6 +1,5 @@
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import type { Task, ScheduleData, ScheduleEvent, Priority } from '../types'
-import ClockIllustration from '../components/ClockIllustration'
 
 const PRIORITY_COLORS: Record<Priority, string> = {
   'דחוף': '#e05555',
@@ -94,7 +93,12 @@ export default function Dashboard() {
           ניהול זמן בלי בלגן!
         </p>
         <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <ClockIllustration />
+          <img
+            src="/logo.png"
+            alt="StudyBuddy Logo"
+            className="logo-hero"
+            style={{ maxWidth: '250px', width: '100%', display: 'block' }}
+          />
         </div>
       </div>
 
