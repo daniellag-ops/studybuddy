@@ -4,6 +4,7 @@ const TABS = [
   { to: '/', label: 'ראשי', icon: '🏠' },
   { to: '/tasks', label: 'משימות', icon: '✅' },
   { to: '/schedule', label: 'לו״ז', icon: '📅' },
+  { to: '/study', label: 'למידה', icon: '📚' },
   { to: '/tips', label: 'טיפים', icon: '💡' },
   { to: '/about', label: 'אנחנו', icon: '👥' },
 ]

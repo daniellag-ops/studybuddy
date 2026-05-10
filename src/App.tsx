@@ -4,6 +4,7 @@ import BackgroundCircles from './components/BackgroundCircles'
 import Dashboard from './pages/Dashboard'
 import Tasks from './pages/Tasks'
 import Schedule from './pages/Schedule'
+import Study from './pages/Study'
 import Tips from './pages/Tips'
 import About from './pages/About'
 
@@ -18,6 +19,7 @@ export default function App() {
               <Route path="/" element={<Dashboard />} />
               <Route path="/tasks" element={<Tasks />} />
               <Route path="/schedule" element={<Schedule />} />
+              <Route path="/study" element={<Study />} />
               <Route path="/tips" element={<Tips />} />
               <Route path="/about" element={<About />} />
             </Routes>
