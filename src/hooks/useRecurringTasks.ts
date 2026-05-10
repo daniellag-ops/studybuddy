@@ -35,6 +35,7 @@ export function useRecurringTasks(
         dueDate: todayStr,
         dueTime: task.dueTime,
         recurringParentId: task.id,
+        ...(task.estimatedMinutes ? { estimatedMinutes: task.estimatedMinutes } : {}),
       })
     }
 

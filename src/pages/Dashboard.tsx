@@ -50,6 +50,15 @@ export default function Dashboard() {
 
   const currentStress = STRESS_LEVELS.find(s => s.value === stress) || STRESS_LEVELS[0]
 
+  const todayUndoneWithEstimate = tasks.filter(t => !t.done && t.dueDate === todayDateStr && t.estimatedMinutes)
+  const totalEstimatedMins = todayUndoneWithEstimate.reduce((sum, t) => sum + (t.estimatedMinutes ?? 0), 0)
+  const estHours = Math.floor(totalEstimatedMins / 60)
+  const estMins = totalEstimatedMins % 60
+  const estOverloaded = totalEstimatedMins > 300
+  const estText = estHours > 0 && estMins > 0
+    ? `${estHours} שעות ו-${estMins} דקות`
+    : estHours > 0 ? `${estHours} שעות` : `${estMins} דקות`
+
   const stats = [
     { label: 'משימות פתוחות', value: openTasks.length, color: '#5b9bd5' },
     { label: 'הושלמו', value: completedTasks.length, color: '#3aaa6d' },
@@ -187,6 +196,21 @@ export default function Dashboard() {
         {/* Today's schedule */}
         <div style={{ ...card, padding: '20px' }}>
           <h2 style={{ fontSize: '17px', fontWeight: 700, fontStyle: 'italic', color: '#2a3a4a', marginBottom: '16px' }}>📅 לוח היום</h2>
+          {totalEstimatedMins > 0 && (
+            <div style={{
+              display: 'flex', alignItems: 'center', gap: '8px',
+              padding: '8px 12px', borderRadius: '12px', marginBottom: '12px',
+              background: estOverloaded ? 'rgba(224,85,85,0.07)' : 'rgba(91,155,213,0.07)',
+              border: `1px solid ${estOverloaded ? 'rgba(224,85,85,0.15)' : 'rgba(91,155,213,0.15)'}`,
+            }}>
+              <span style={{ fontSize: '13px', fontWeight: 600, color: estOverloaded ? '#e05555' : '#5b9bd5', flex: 1 }}>
+                ⏱️ זמן משוער להיום: {estText}
+              </span>
+              {estOverloaded && (
+                <span style={{ fontSize: '12px', fontWeight: 700, color: '#e05555' }}>יום עמוס! שקלו לדחות משימות</span>
+              )}
+            </div>
+          )}
           {todayItems.length === 0 ? (
             <p style={{ fontSize: '14px', color: '#6a8a9a' }}>אין אירועים היום</p>
           ) : (

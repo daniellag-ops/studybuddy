@@ -34,6 +34,13 @@ interface ModalState { dayIdx: number; hour: string }
 
 const ROW_HEIGHT = 56
 const GRID_LINE = '#e8eef4'
+
+const fmtDuration = (mins: number) => {
+  if (mins < 60) return `${mins} דק׳`
+  if (mins === 60) return 'שעה'
+  if (mins === 120) return 'שעתיים'
+  return `${mins / 60} שעות`
+}
 const HEADER_BG = '#5b9bd5'
 const TODAY_COL_BG = '#e8f1fa'
 
@@ -104,6 +111,7 @@ export default function Schedule() {
           dueDate: ds,
           dueTime: task.dueTime,
           recurringParentId: id,
+          ...(task.estimatedMinutes ? { estimatedMinutes: task.estimatedMinutes } : {}),
         }])
       }
     } else {
@@ -345,37 +353,45 @@ export default function Schedule() {
                     ))}
 
                     {/* Task chips */}
-                    {cellTasks.map(task => (
-                      <div
-                        key={task.id}
-                        className="event-chip"
-                        style={{
-                          background: `${PRIORITY_COLORS[task.priority]}14`,
-                          borderRight: `4px solid ${PRIORITY_COLORS[task.priority]}`,
-                          borderRadius: '8px',
-                          padding: '3px 5px',
-                          marginBottom: '2px',
-                          display: 'flex',
-                          alignItems: 'flex-start',
-                          gap: '3px',
-                          opacity: task.done ? 0.45 : 1,
-                          cursor: 'pointer',
-                        }}
-                        onClick={e => { e.stopPropagation(); toggleTask(task.id, date) }}
-                      >
-                        <span style={{ flexShrink: 0, fontSize: '11px', lineHeight: '16px' }}>
-                          {task.isRecurring || task.recurringParentId ? '🔄' : '✅'}
-                        </span>
-                        <div style={{ flex: 1, overflow: 'hidden', minWidth: 0 }}>
-                          <div style={{
-                            fontSize: '12px', fontWeight: 500, color: '#2a3a4a', lineHeight: '16px',
-                            wordBreak: 'break-word',
-                            textDecoration: task.done ? 'line-through' : 'none',
-                          }}>{task.text}</div>
-                          <div style={{ fontSize: '11px', color: '#6a8a9a', lineHeight: '14px' }}>{task.dueTime || '09:00'}</div>
+                    {cellTasks.map(task => {
+                      const chipMinH = task.estimatedMinutes
+                        ? Math.max(30, Math.round((task.estimatedMinutes / 60) * ROW_HEIGHT))
+                        : undefined
+                      return (
+                        <div
+                          key={task.id}
+                          className="event-chip"
+                          style={{
+                            background: `${PRIORITY_COLORS[task.priority]}14`,
+                            borderRight: `4px solid ${PRIORITY_COLORS[task.priority]}`,
+                            borderRadius: '8px',
+                            padding: '3px 5px',
+                            marginBottom: '2px',
+                            display: 'flex',
+                            alignItems: 'flex-start',
+                            gap: '3px',
+                            opacity: task.done ? 0.45 : 1,
+                            cursor: 'pointer',
+                            minHeight: chipMinH,
+                          }}
+                          onClick={e => { e.stopPropagation(); toggleTask(task.id, date) }}
+                        >
+                          <span style={{ flexShrink: 0, fontSize: '11px', lineHeight: '16px' }}>
+                            {task.isRecurring || task.recurringParentId ? '🔄' : '✅'}
+                          </span>
+                          <div style={{ flex: 1, overflow: 'hidden', minWidth: 0 }}>
+                            <div style={{
+                              fontSize: '12px', fontWeight: 500, color: '#2a3a4a', lineHeight: '16px',
+                              wordBreak: 'break-word',
+                              textDecoration: task.done ? 'line-through' : 'none',
+                            }}>
+                              {task.text}{task.estimatedMinutes ? ` (${fmtDuration(task.estimatedMinutes)})` : ''}
+                            </div>
+                            <div style={{ fontSize: '11px', color: '#6a8a9a', lineHeight: '14px' }}>{task.dueTime || '09:00'}</div>
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      )
+                    })}
                   </div>
                 )
               })}

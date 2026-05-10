@@ -19,6 +19,23 @@ const PRIORITY_ORDER: Record<Priority, number> = { 'דחוף': 0, 'בינוני'
 
 const DAY_LABELS = ['א׳', 'ב׳', 'ג׳', 'ד׳', 'ה׳', 'ו׳', 'ש׳']
 
+const ESTIMATE_OPTIONS = [
+  { label: '10 דקות', value: 10 },
+  { label: '20 דקות', value: 20 },
+  { label: '30 דקות', value: 30 },
+  { label: '45 דקות', value: 45 },
+  { label: 'שעה', value: 60 },
+  { label: 'שעתיים', value: 120 },
+  { label: '3+ שעות', value: 180 },
+]
+
+const fmtEstimate = (mins: number) => {
+  if (mins < 60) return `${mins} דק׳`
+  if (mins === 60) return 'שעה'
+  if (mins === 120) return 'שעתיים'
+  return `${mins / 60} שעות`
+}
+
 const card: React.CSSProperties = {
   width: '100%',
   boxSizing: 'border-box',
@@ -49,6 +66,7 @@ export default function Tasks() {
   const [isRecurring, setIsRecurring] = useState(false)
   const [recurrenceType, setRecurrenceType] = useState<'daily' | 'weekly' | 'custom'>('weekly')
   const [recurrenceDays, setRecurrenceDays] = useState<number[]>([])
+  const [estimatedMinutes, setEstimatedMinutes] = useState<number | null>(null)
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null)
 
   useRecurringTasks(tasks, setTasks)
@@ -65,6 +83,7 @@ export default function Tasks() {
       done: false,
       createdAt: new Date().toISOString(),
       ...(dueDate ? { dueDate, dueTime } : {}),
+      ...(estimatedMinutes ? { estimatedMinutes } : {}),
       ...(isRecurring ? {
         isRecurring: true,
         recurrenceType,
@@ -74,6 +93,7 @@ export default function Tasks() {
     setText('')
     setDueDate('')
     setDueTime('09:00')
+    setEstimatedMinutes(null)
     setIsRecurring(false)
     setRecurrenceDays([])
     setRecurrenceType('weekly')
@@ -100,6 +120,7 @@ export default function Tasks() {
           dueDate: todayStr,
           dueTime: task.dueTime,
           recurringParentId: id,
+          ...(task.estimatedMinutes ? { estimatedMinutes: task.estimatedMinutes } : {}),
         }, ...prev])
       }
     } else {
@@ -189,6 +210,16 @@ export default function Tasks() {
                 style={{ ...inputStyle, cursor: 'pointer' }}
               />
             )}
+            <select
+              value={estimatedMinutes ?? ''}
+              onChange={e => setEstimatedMinutes(e.target.value ? Number(e.target.value) : null)}
+              style={{ ...inputStyle, cursor: 'pointer', color: estimatedMinutes ? '#2a3a4a' : '#6a8fa8' }}
+            >
+              <option value="">⏱️ זמן משוער</option>
+              {ESTIMATE_OPTIONS.map(opt => (
+                <option key={opt.value} value={opt.value}>{opt.label}</option>
+              ))}
+            </select>
           </div>
           <button
             className="task-add-btn"
@@ -375,6 +406,11 @@ export default function Tasks() {
               {task.dueDate && (
                 <span style={{ fontSize: '12px', color: '#6a8fa8', flexShrink: 0 }}>
                   📅 {task.dueDate} {task.dueTime}
+                </span>
+              )}
+              {task.estimatedMinutes && (
+                <span style={{ fontSize: '11px', padding: '2px 7px', borderRadius: '999px', fontWeight: 600, flexShrink: 0, background: 'rgba(100,116,139,0.1)', color: '#64748b' }}>
+                  ⏱️ {fmtEstimate(task.estimatedMinutes)}
                 </span>
               )}
               <span

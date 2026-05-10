@@ -8,6 +8,7 @@ export interface Task {
   createdAt: string
   dueDate?: string
   dueTime?: string
+  estimatedMinutes?: number | null
   isRecurring?: boolean
   recurrenceType?: 'daily' | 'weekly' | 'custom'
   recurrenceDays?: number[]
