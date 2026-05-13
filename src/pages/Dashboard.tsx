@@ -7,12 +7,12 @@ const PRIORITY_COLORS: Record<Priority, string> = {
   'רגיל': '#3aaa6d',
 }
 
-const STRESS_LEVELS = [
-  { label: '😌 רגוע', value: 1, color: '#3aaa6d', advice: 'מעולה! אתם במצב מצוין. המשיכו לשמור על שגרה מאוזנת ותשמרו על האנרגיה הזו.' },
-  { label: '🙂 בסדר', value: 2, color: '#228b78', advice: 'אתם על המסלול הנכון! קצת הפסקה ומשקאות יכולים לעזור לשמור על הרמה הזו.' },
-  { label: '😐 לחוץ קצת', value: 3, color: '#d4960a', advice: 'נסו לעשות הפסקה קצרה. טכניקת הפומודורו יכולה לעזור לנהל את הזמן טוב יותר.' },
-  { label: '😰 לחוץ', value: 4, color: '#e07a1a', advice: 'אנחנו מבינים. נסו נשימה עמוקה (4-7-8), תפרקו משימות גדולות לקטנות, ואל תשכחו לישון.' },
-  { label: '🤯 על הקצה', value: 5, color: '#e05555', advice: 'עצרו רגע. שוחחו עם מישהו שאתם סומכים עליהם, צאו להליכה קצרה, ותזכרו: זה זמני.' },
+const PRESSURE_LEVELS = [
+  { max: 5,        label: '😌 רגוע',     color: '#3aaa6d', tip: 'יום מעולה להתקדם עם פרויקטים או לקרוא לכיף' },
+  { max: 12,       label: '🙂 בסדר',      color: '#228b78', tip: 'קחו הפסקה של 5 דקות כל 25 דקות' },
+  { max: 20,       label: '😐 עמוס קצת', color: '#d4960a', tip: 'קחו הפסקה של 5 דקות כל 25 דקות' },
+  { max: 30,       label: '😰 עמוס',      color: '#e07a1a', tip: 'התחילו מהמשימה הכי קשה כשהאנרגיה גבוהה' },
+  { max: Infinity, label: '🤯 על הקצה',  color: '#e05555', tip: 'התחילו מהמשימה הכי קשה כשהאנרגיה גבוהה' },
 ]
 
 const card: React.CSSProperties = {
@@ -25,21 +25,71 @@ const card: React.CSSProperties = {
   transition: 'background-color 0.3s ease',
 }
 
+function fmt(d: Date) {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+}
+
 export default function Dashboard() {
   const [tasks] = useLocalStorage<Task[]>('sb_tasks', [])
   const [schedule] = useLocalStorage<ScheduleData>('sb_schedule', {})
-  const [stress, setStress] = useLocalStorage<number>('sb_stress', 1)
 
-  const openTasks = tasks.filter(t => !t.done)
+  // ── Date strings ──
+  const today = new Date()
+  const todayDateStr = fmt(today)
+  const todayIdx = today.getDay()
+
+  const tomorrow = new Date(today)
+  tomorrow.setDate(today.getDate() + 1)
+  const tomorrowDateStr = fmt(tomorrow)
+
+  const in3 = new Date(today); in3.setDate(today.getDate() + 3)
+  const in3Str = fmt(in3)
+  const in5 = new Date(today); in5.setDate(today.getDate() + 5)
+  const in5Str = fmt(in5)
+
+  // ── Task buckets ──
+  const undone = tasks.filter(t => !t.done)
+  const openTasks = undone
   const completedTasks = tasks.filter(t => t.done)
-  const urgentOpen = openTasks.filter(t => t.priority === 'דחוף').slice(0, 4)
 
-  const todayIdx = new Date().getDay()
-  const todayDateStr = (() => {
-    const d = new Date()
-    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
-  })()
+  const tasksToday     = undone.filter(t => t.dueDate === todayDateStr)
+  const tasksTomorrow  = undone.filter(t => t.dueDate === tomorrowDateStr)
+  const hardTasks      = undone.filter(t => t.priority === 'דחוף' && t.dueDate && t.dueDate >= todayDateStr && t.dueDate <= in3Str)
+  const overdueTasks   = undone.filter(t => t.dueDate && t.dueDate < todayDateStr)
+  const upcomingTests  = undone.filter(t => t.text.includes('מבחן') && t.dueDate && t.dueDate >= todayDateStr && t.dueDate <= in5Str)
 
+  // ── Pressure score ──
+  const pressureScore =
+    tasksToday.length   * 2 +
+    tasksTomorrow.length * 1 +
+    hardTasks.length    * 3 +
+    overdueTasks.length * 4 +
+    upcomingTests.length * 3
+
+  const level = PRESSURE_LEVELS.find(l => pressureScore <= l.max)!
+  const barPct = Math.min((pressureScore / 35) * 100, 100)
+
+  // ── WHY reasons ──
+  const reasons: string[] = []
+  if (tasksToday.length > 0) {
+    const urgentToday = tasksToday.filter(t => t.priority === 'דחוף')
+    reasons.push(`${tasksToday.length} משימות להיום${urgentToday.length > 0 ? `, ${urgentToday.length} מהן דחופות` : ''}`)
+  }
+  if (tasksTomorrow.length > 0) reasons.push(`${tasksTomorrow.length} משימות למחר`)
+  if (overdueTasks.length > 0) reasons.push(overdueTasks.length === 1 ? 'משימה אחת באיחור!' : `${overdueTasks.length} משימות באיחור!`)
+  if (upcomingTests.length > 0) reasons.push(upcomingTests.length === 1 ? 'מבחן בקרוב' : `${upcomingTests.length} מבחנים בקרוב`)
+  if (reasons.length === 0) reasons.push('אין משימות דחופות! יום רגוע 🌿')
+
+  // ── Estimated time ──
+  const todayUndoneWithEst = tasksToday.filter(t => t.estimatedMinutes)
+  const totalEstMins = todayUndoneWithEst.reduce((s, t) => s + (t.estimatedMinutes ?? 0), 0)
+  const estH = Math.floor(totalEstMins / 60)
+  const estM = totalEstMins % 60
+  const estText = estH > 0 && estM > 0 ? `${estH} שעות ו-${estM} דקות`
+    : estH > 0 ? `${estH} שעות` : `${estM} דקות`
+  const estOverloaded = totalEstMins > 300
+
+  // ── Today's schedule ──
   type ScheduleItem =
     | { kind: 'event'; time: string; ev: ScheduleEvent }
     | { kind: 'task'; time: string; task: Task }
@@ -49,22 +99,13 @@ export default function Dashboard() {
     ...tasks.filter(t => t.dueDate === todayDateStr).map(t => ({ kind: 'task' as const, time: t.dueTime || '09:00', task: t })),
   ].sort((a, b) => a.time.localeCompare(b.time))
 
-  const currentStress = STRESS_LEVELS.find(s => s.value === stress) || STRESS_LEVELS[0]
-
-  const todayUndoneWithEstimate = tasks.filter(t => !t.done && t.dueDate === todayDateStr && t.estimatedMinutes)
-  const totalEstimatedMins = todayUndoneWithEstimate.reduce((sum, t) => sum + (t.estimatedMinutes ?? 0), 0)
-  const estHours = Math.floor(totalEstimatedMins / 60)
-  const estMins = totalEstimatedMins % 60
-  const estOverloaded = totalEstimatedMins > 300
-  const estText = estHours > 0 && estMins > 0
-    ? `${estHours} שעות ו-${estMins} דקות`
-    : estHours > 0 ? `${estHours} שעות` : `${estMins} דקות`
+  const urgentOpen = openTasks.filter(t => t.priority === 'דחוף').slice(0, 4)
 
   const stats = [
-    { label: 'משימות פתוחות', value: openTasks.length, color: '#5b9bd5' },
-    { label: 'הושלמו', value: completedTasks.length, color: '#3aaa6d' },
-    { label: 'סה״כ משימות', value: tasks.length, color: '#4a8ac7' },
-    { label: 'רמת לחץ', value: currentStress.label, color: currentStress.color },
+    { label: 'משימות פתוחות', value: openTasks.length,    color: '#5b9bd5' },
+    { label: 'הושלמו',        value: completedTasks.length, color: '#3aaa6d' },
+    { label: 'סה״כ משימות',  value: tasks.length,          color: '#4a8ac7' },
+    { label: 'רמת עומס',      value: level.label,           color: level.color },
   ]
 
   return (
@@ -74,41 +115,17 @@ export default function Dashboard() {
     >
       {/* Hero */}
       <div style={{ textAlign: 'center', marginBottom: '28px', paddingTop: '4px' }}>
-        <p style={{
-          fontSize: '20px',
-          color: '#5b9bd5',
-          fontStyle: 'italic',
-          fontWeight: 700,
-          marginBottom: '4px',
-        }}>
+        <p style={{ fontSize: '20px', color: '#5b9bd5', fontStyle: 'italic', fontWeight: 700, marginBottom: '4px' }}>
           ברוכים הבאים!
         </p>
-        <h1 style={{
-          fontSize: '52px',
-          fontWeight: 900,
-          color: '#5b9bd5',
-          fontStyle: 'italic',
-          letterSpacing: '-2px',
-          lineHeight: 1,
-          marginBottom: '8px',
-        }}>
+        <h1 style={{ fontSize: '52px', fontWeight: 900, color: '#5b9bd5', fontStyle: 'italic', letterSpacing: '-2px', lineHeight: 1, marginBottom: '8px' }}>
           StudyBuddy
         </h1>
-        <p style={{
-          fontSize: '16px',
-          color: 'var(--text-dim)',
-          fontWeight: 600,
-          marginBottom: '24px',
-        }}>
+        <p style={{ fontSize: '16px', color: 'var(--text-dim)', fontWeight: 600, marginBottom: '24px' }}>
           ניהול זמן בלי בלגן!
         </p>
         <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <img
-            src="/logo.png"
-            alt="StudyBuddy Logo"
-            className="logo-hero"
-            style={{ maxWidth: '250px', width: '100%', display: 'block' }}
-          />
+          <img src="/logo.png" alt="StudyBuddy Logo" className="logo-hero" style={{ maxWidth: '250px', width: '100%', display: 'block' }} />
         </div>
       </div>
 
@@ -116,49 +133,59 @@ export default function Dashboard() {
       <div className="stats-grid">
         {stats.map((s, i) => (
           <div key={i} style={{ ...card, padding: '16px', textAlign: 'center' }}>
-            <div style={{ fontSize: '24px', fontWeight: 700, color: s.color }}>{s.value}</div>
+            <div style={{ fontSize: i === 3 ? '16px' : '24px', fontWeight: 700, color: s.color }}>{s.value}</div>
             <div style={{ fontSize: '13px', marginTop: '4px', color: 'var(--text-dim)' }}>{s.label}</div>
           </div>
         ))}
       </div>
 
-      {/* Stress Meter */}
-      <div style={{ ...card, padding: '20px', marginBottom: '16px' }}>
-        <h2 style={{ fontSize: '17px', fontWeight: 700, fontStyle: 'italic', color: 'var(--text)', marginBottom: '16px' }}>מד לחץ</h2>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '16px' }}>
-          {STRESS_LEVELS.map(level => (
-            <button
-              key={level.value}
-              onClick={() => setStress(level.value)}
-              style={{
-                padding: '8px 16px',
-                borderRadius: '14px',
-                fontSize: '14px',
-                fontWeight: 600,
-                cursor: 'pointer',
-                transition: 'all 0.2s',
-                background: stress === level.value ? level.color : 'rgba(91,155,213,0.06)',
-                color: stress === level.value ? 'white' : '#2a3a4a',
-                border: stress === level.value ? 'none' : '1px solid rgba(91,155,213,0.15)',
-                boxShadow: stress === level.value ? `0 4px 12px ${level.color}44` : 'none',
-              }}
-            >
-              {level.label}
-            </button>
+      {/* Smart Pressure Meter */}
+      <div style={{ ...card, padding: '22px', marginBottom: '16px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' }}>
+          <h2 style={{ fontSize: '17px', fontWeight: 700, fontStyle: 'italic', color: 'var(--text)' }}>📊 מד עומס חכם</h2>
+          <span style={{
+            fontSize: '15px', fontWeight: 800, color: level.color,
+            background: `${level.color}18`, borderRadius: '12px', padding: '4px 12px',
+          }}>
+            {level.label}
+          </span>
+        </div>
+
+        {/* Bar */}
+        <div style={{ direction: 'ltr', width: '100%', height: '12px', borderRadius: '6px', background: 'rgba(91,155,213,0.1)', overflow: 'hidden', marginBottom: '14px' }}>
+          <div style={{
+            height: '100%', borderRadius: '6px',
+            width: `${barPct}%`,
+            background: 'linear-gradient(90deg, #3aaa6d, #d4960a, #e05555)',
+            transition: 'width 0.6s ease',
+          }} />
+        </div>
+
+        {/* Reasons */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '5px', marginBottom: '14px' }}>
+          {reasons.map((r, i) => (
+            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '7px', fontSize: '13px', color: 'var(--text-dim)' }}>
+              <span style={{ color: level.color, fontSize: '11px' }}>●</span>
+              {r}
+            </div>
           ))}
+          {totalEstMins > 0 && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '7px', fontSize: '13px', color: estOverloaded ? '#e05555' : 'var(--text-dim)' }}>
+              <span style={{ color: estOverloaded ? '#e05555' : '#5b9bd5', fontSize: '11px' }}>●</span>
+              זמן עבודה משוער להיום: {estText}{estOverloaded ? ' — יום עמוס, שקלו לדחות' : ''}
+            </div>
+          )}
         </div>
-        <div style={{ direction: 'ltr', width: '100%', height: '12px', borderRadius: '6px', background: '#e8f3f0', overflow: 'hidden', marginBottom: '12px' }}>
-          <div
-            style={{
-              height: '100%',
-              borderRadius: '6px',
-              width: `${(stress / 5) * 100}%`,
-              background: 'linear-gradient(90deg, #3aaa6d, #d4960a, #e05555)',
-              transition: 'width 0.5s ease',
-            }}
-          />
+
+        {/* Smart tip */}
+        <div style={{
+          padding: '10px 14px', borderRadius: '12px',
+          background: `${level.color}12`,
+          border: `1px solid ${level.color}28`,
+          fontSize: '13px', fontWeight: 600, color: level.color,
+        }}>
+          💡 טיפ: {level.tip}
         </div>
-        <p style={{ fontSize: '14px', fontWeight: 500, color: currentStress.color, marginBottom: '16px' }}>{currentStress.advice}</p>
       </div>
 
       {/* Bottom row */}
@@ -171,23 +198,9 @@ export default function Dashboard() {
           ) : (
             <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '8px' }}>
               {urgentOpen.map(task => (
-                <li
-                  key={task.id}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '12px',
-                    padding: '8px 12px',
-                    borderRadius: '14px',
-                    fontSize: '14px',
-                    background: 'rgba(224,85,85,0.06)',
-                    borderRight: '3px solid #e05555',
-                  }}
-                >
+                <li key={task.id} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '8px 12px', borderRadius: '14px', fontSize: '14px', background: 'rgba(224,85,85,0.06)', borderRight: '3px solid #e05555' }}>
                   <span style={{ flex: 1 }}>{task.text}</span>
-                  <span style={{ fontSize: '12px', padding: '2px 8px', borderRadius: '999px', fontWeight: 600, background: '#e05555', color: 'white' }}>
-                    דחוף
-                  </span>
+                  <span style={{ fontSize: '12px', padding: '2px 8px', borderRadius: '999px', fontWeight: 600, background: '#e05555', color: 'white' }}>דחוף</span>
                 </li>
               ))}
             </ul>
@@ -197,58 +210,17 @@ export default function Dashboard() {
         {/* Today's schedule */}
         <div style={{ ...card, padding: '20px' }}>
           <h2 style={{ fontSize: '17px', fontWeight: 700, fontStyle: 'italic', color: 'var(--text)', marginBottom: '16px' }}>📅 לוח היום</h2>
-          {totalEstimatedMins > 0 && (
-            <div style={{
-              display: 'flex', alignItems: 'center', gap: '8px',
-              padding: '8px 12px', borderRadius: '12px', marginBottom: '12px',
-              background: estOverloaded ? 'rgba(224,85,85,0.07)' : 'rgba(91,155,213,0.07)',
-              border: `1px solid ${estOverloaded ? 'rgba(224,85,85,0.15)' : 'rgba(91,155,213,0.15)'}`,
-            }}>
-              <span style={{ fontSize: '13px', fontWeight: 600, color: estOverloaded ? '#e05555' : '#5b9bd5', flex: 1 }}>
-                ⏱️ זמן משוער להיום: {estText}
-              </span>
-              {estOverloaded && (
-                <span style={{ fontSize: '12px', fontWeight: 700, color: '#e05555' }}>יום עמוס! שקלו לדחות משימות</span>
-              )}
-            </div>
-          )}
           {todayItems.length === 0 ? (
             <p style={{ fontSize: '14px', color: 'var(--text-dim)' }}>אין אירועים היום</p>
           ) : (
             <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '8px' }}>
               {todayItems.map((item, i) => item.kind === 'event' ? (
-                <li
-                  key={i}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '12px',
-                    padding: '8px 12px',
-                    borderRadius: '14px',
-                    fontSize: '14px',
-                    background: 'rgba(91,155,213,0.05)',
-                    borderRight: `3px solid ${item.ev.categoryColor}`,
-                  }}
-                >
+                <li key={i} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '8px 12px', borderRadius: '14px', fontSize: '14px', background: 'rgba(91,155,213,0.05)', borderRight: `3px solid ${item.ev.categoryColor}` }}>
                   <span style={{ fontWeight: 600, fontSize: '12px', color: 'var(--text-dim)', flexShrink: 0 }}>{item.time}</span>
                   <span>{item.ev.categoryEmoji} {item.ev.activity}</span>
                 </li>
               ) : (
-                <li
-                  key={i}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '12px',
-                    padding: '8px 12px',
-                    borderRadius: '14px',
-                    fontSize: '14px',
-                    background: 'rgba(91,155,213,0.04)',
-                    borderRight: `3px solid ${PRIORITY_COLORS[item.task.priority]}`,
-                    opacity: item.task.done ? 0.55 : 1,
-                    textDecoration: item.task.done ? 'line-through' : 'none',
-                  }}
-                >
+                <li key={i} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '8px 12px', borderRadius: '14px', fontSize: '14px', background: 'rgba(91,155,213,0.04)', borderRight: `3px solid ${PRIORITY_COLORS[item.task.priority]}`, opacity: item.task.done ? 0.55 : 1, textDecoration: item.task.done ? 'line-through' : 'none' }}>
                   <span style={{ fontWeight: 600, fontSize: '12px', color: 'var(--text-dim)', flexShrink: 0 }}>{item.time}</span>
                   <span>✅ {item.task.text}</span>
                 </li>
